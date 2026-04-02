@@ -23,8 +23,8 @@ Create shareable link lists with automatic metadata scraping, search, sort, and 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/linkdrop.git
-cd linkdrop
+git clone https://github.com/martapanc/linkarium.git
+cd linkarium
 npm install
 ```
 
@@ -44,7 +44,7 @@ Fill in your Supabase credentials:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
@@ -114,7 +114,7 @@ src/
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-anon-key
 NEXT_PUBLIC_APP_URL=https://your-domain.com
 ```
 

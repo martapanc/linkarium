@@ -1,9 +1,9 @@
 {
-  "name": "linkdrop",
+  "name": "linkarium",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3637",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -17,7 +17,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.12",
     "nanoid": "^5.0.9",
-    "next": "15.1.4",
+    "next": "16.2.2",
     "open-graph-scraper": "^6.8.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

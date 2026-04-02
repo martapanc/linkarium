@@ -32,10 +32,10 @@ export async function generateMetadata({
   const title = list.title || "My Links";
   const description =
     list.description ||
-    `A collection of ${count ?? 0} link${count !== 1 ? "s" : ""} shared via LinkDrop`;
+    `A collection of ${count ?? 0} link${count !== 1 ? "s" : ""} shared via Linkarium`;
 
   return {
-    title: `${title} — LinkDrop`,
+    title: `${title} — Linkarium`,
     description,
     openGraph: {
       title,
