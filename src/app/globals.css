@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Instrument+Serif:ital@0;1&display=swap");
+
+@theme {
+  --color-sand-50: #faf9f7;
+  --color-sand-100: #f2f0eb;
+  --color-sand-200: #e8e4dd;
+  --color-sand-300: #d4cfc5;
+  --color-sand-400: #b5ad9e;
+  --color-sand-500: #9a9082;
+  --color-sand-600: #7d7466;
+  --color-sand-700: #5e5749;
+  --color-sand-800: #3d3830;
+  --color-sand-900: #1f1c18;
+
+  --color-coral-400: #f0826d;
+  --color-coral-500: #e8634a;
+  --color-coral-600: #d44f36;
+
+  --color-teal-500: #2aa198;
+  --color-teal-600: #1e847c;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  font-family: var(--font-body);
+  color: var(--color-sand-900);
+  background: var(--color-sand-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heading typography */
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--color-coral-500);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Toast overrides */
+[data-sonner-toaster] {
+  font-family: var(--font-body) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-sand-300);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-sand-400);
+}
+
+/* Link card image shimmer during loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-sand-200) 25%,
+    var(--color-sand-100) 50%,
+    var(--color-sand-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Fade in animation for link cards */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.3s ease-out both;
+}
