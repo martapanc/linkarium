@@ -11,3 +11,6 @@ jobs:
     uses: martapanc/shared-workflows/.github/workflows/release-please.yml@master
     with:
       release-type: node
+    permissions:
+      contents: write
+      pull-requests: write
