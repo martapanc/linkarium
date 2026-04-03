@@ -43,10 +43,10 @@ export default function Home() {
       <nav className="border-b border-sand-200 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <span className="font-display text-2xl text-sand-900 tracking-tight">
-            LinkDrop
+            Linkarium
           </span>
           <a
-            href="https://github.com/your-repo/linkdrop"
+            href="https://github.com/martapanc/linkarium"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-sand-500 hover:text-sand-700 transition-colors"
@@ -167,7 +167,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-400">
-        LinkDrop — open source link list sharing
+        Linkarium — open source link list sharing
       </footer>
     </div>
   );

@@ -176,7 +176,7 @@ export function ListView({ list, initialLinks }: Props) {
             href="/"
             className="font-display text-xl text-sand-900 tracking-tight hover:text-coral-500 transition-colors"
           >
-            LinkDrop
+            Linkarium
           </a>
           <ShareButton listId={list.id} />
         </div>
@@ -249,7 +249,7 @@ export function ListView({ list, initialLinks }: Props) {
           href="/"
           className="text-xs text-sand-400 hover:text-coral-500 transition-colors"
         >
-          Create your own list with LinkDrop
+          Create your own list with Linkarium
         </a>
       </footer>
     </div>

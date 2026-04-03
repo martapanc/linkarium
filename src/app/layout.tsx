@@ -3,12 +3,12 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LinkDrop — Create & share link lists instantly",
+  title: "Linkarium — Create & share link lists instantly",
   description:
     "Paste your links, get a shareable page. No signup required. Search, sort, and organise your bookmarks.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
-    title: "LinkDrop — Create & share link lists instantly",
+    title: "Linkarium — Create & share link lists instantly",
     description:
       "Paste your links, get a shareable page. No signup required.",
     type: "website",

@@ -14,7 +14,7 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult> {
       fetchOptions: {
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (compatible; LinkDrop/1.0; +https://linkdrop.app)",
+            "Mozilla/5.0 (compatible; Linkarium/1.0; +https://likarium.app)",
         },
       },
     });
