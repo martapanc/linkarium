@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { toast } from "sonner";
-import type { DbList, DbLink, SortConfig, SortField } from "@/lib/types";
+import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
 import { LinkCard } from "./LinkCard";
 import { AddLinksForm } from "./AddLinksForm";
 import { SearchFilterBar } from "./SearchFilterBar";
@@ -40,7 +40,7 @@ export function ListView({ list, initialLinks }: Props) {
       const q = search.toLowerCase();
       result = result.filter(
         (l) =>
-          l.url.toLowerCase().includes(q) ||
+          l.url?.toLowerCase().includes(q) ||
           l.title?.toLowerCase().includes(q) ||
           l.description?.toLowerCase().includes(q) ||
           l.domain?.toLowerCase().includes(q),
@@ -125,6 +125,72 @@ export function ListView({ list, initialLinks }: Props) {
     }
   }, []);
 
+  // Add paper handler
+  const handleAddPaper = useCallback(
+    async (paper: PaperInput) => {
+      setIsAdding(true);
+      try {
+        const res = await fetch("/api/links", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, paper }),
+        });
+
+        if (!res.ok) throw new Error("Failed to add paper");
+
+        const { links: newLinks, duplicatesSkipped } = await res.json();
+
+        if (newLinks.length > 0) {
+          setLinks((prev) => [...prev, ...newLinks]);
+          toast.success("Paper reference added");
+        } else if (duplicatesSkipped > 0) {
+          toast("This paper is already in your list");
+        }
+      } catch {
+        toast.error("Failed to add paper reference");
+      } finally {
+        setIsAdding(false);
+      }
+    },
+    [list.id],
+  );
+
+  // Batch add papers handler
+  const handleAddPapers = useCallback(
+    async (papers: PaperInput[]) => {
+      setIsAdding(true);
+      try {
+        const res = await fetch("/api/links", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, papers }),
+        });
+
+        if (!res.ok) throw new Error("Failed to add papers");
+
+        const { links: newLinks, duplicatesSkipped } = await res.json();
+
+        if (newLinks.length > 0) {
+          setLinks((prev) => [...prev, ...newLinks]);
+          toast.success(
+            `Added ${newLinks.length} paper${newLinks.length !== 1 ? "s" : ""}`,
+          );
+        }
+        if (duplicatesSkipped > 0) {
+          toast(`${duplicatesSkipped} already in list — skipped`);
+        }
+        if (newLinks.length === 0 && duplicatesSkipped === 0) {
+          toast.error("No papers were added");
+        }
+      } catch {
+        toast.error("Failed to add paper references");
+      } finally {
+        setIsAdding(false);
+      }
+    },
+    [list.id],
+  );
+
   // Re-scrape handler
   const handleRescrape = useCallback(async (link: DbLink) => {
     try {
@@ -189,7 +255,7 @@ export function ListView({ list, initialLinks }: Props) {
 
           {/* Add links */}
           <div className="mt-8">
-            <AddLinksForm onAdd={handleAddLinks} isAdding={isAdding} />
+            <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} isAdding={isAdding} />
           </div>
 
           {/* Search / filter / sort bar */}

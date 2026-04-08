@@ -65,7 +65,7 @@ export default function Home() {
             <span className="text-coral-500 italic">Share the list.</span>
           </h1>
           <p className="text-lg text-sand-500 max-w-md mx-auto">
-            Paste a bunch of URLs, get a clean shareable page with previews.
+            Paste URLs or academic paper references, get a clean shareable page.
             No signup needed.
           </p>
         </div>
@@ -135,13 +135,13 @@ export default function Home() {
             {[
               {
                 step: "1",
-                title: "Paste links",
-                desc: "Drop in URLs one by one, or paste a whole block of text — we'll find them.",
+                title: "Paste links or papers",
+                desc: "Drop in URLs, or paste academic citations in [Author Year] format — we handle both.",
               },
               {
                 step: "2",
                 title: "Get previews",
-                desc: "Each link is scraped for its title, description, and image automatically.",
+                desc: "URLs are scraped for title and image. Paper references show authors, year, and venue.",
               },
               {
                 step: "3",

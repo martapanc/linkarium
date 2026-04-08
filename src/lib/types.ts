@@ -11,10 +11,13 @@ export interface DbList {
   expires_at: string | null;
 }
 
+export type LinkType = "url" | "paper";
+
 export interface DbLink {
   id: string;
   list_id: string;
-  url: string;
+  url: string | null;
+  link_type: LinkType;
   title: string | null;
   description: string | null;
   image_url: string | null;
@@ -23,6 +26,11 @@ export interface DbLink {
   position: number;
   created_at: string;
   scraped_at: string | null;
+  // Paper-specific fields
+  doi: string | null;
+  citation_authors: string | null;
+  citation_year: number | null;
+  citation_venue: string | null;
 }
 
 // ============================================================
@@ -43,6 +51,15 @@ export interface CreateListResponse {
 export interface AddLinksRequest {
   listId: string;
   urls: string[];
+}
+
+export interface PaperInput {
+  title: string;
+  doi?: string;
+  citation_authors?: string;
+  citation_year?: number;
+  citation_venue?: string;
+  description?: string;
 }
 
 export interface ScrapeResult {
