@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import type { DbLink } from "@/lib/types";
 
@@ -33,9 +34,10 @@ interface Props {
   onDelete: (id: string) => void;
   onRescrape: (link: DbLink) => void;
   canWrite: boolean;
+  dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>;
 }
 
-export function LinkCard({ link, index, onDelete, onRescrape, canWrite }: Props) {
+export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHandleProps }: Props) {
   const [imgError, setImgError] = useState(false);
   const [isRescraping, setIsRescraping] = useState(false);
 
@@ -211,10 +213,21 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite }: Props)
 
       {/* Action column — only shown when write access is granted */}
       {canWrite && <DropdownMenu.Root>
-        <div className="shrink-0 flex items-center border-l border-sand-100">
+        <div className="shrink-0 flex flex-col items-center border-l border-sand-100">
+          {dragHandleProps && (
+            <button
+              {...dragHandleProps}
+              className="flex-1 px-3 text-sand-200 hover:text-sand-400 transition-colors duration-150 cursor-grab active:cursor-grabbing touch-none"
+              aria-label="Drag to reorder"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M7 2a2 2 0 110 4 2 2 0 010-4zM7 8a2 2 0 110 4 2 2 0 010-4zM7 14a2 2 0 110 4 2 2 0 010-4zM13 2a2 2 0 110 4 2 2 0 010-4zM13 8a2 2 0 110 4 2 2 0 010-4zM13 14a2 2 0 110 4 2 2 0 010-4z" />
+              </svg>
+            </button>
+          )}
           <DropdownMenu.Trigger asChild>
             <button
-              className="h-full px-3 text-sand-300 hover:text-sand-600 hover:bg-sand-50 transition-colors duration-150 cursor-pointer rounded-r-xl"
+              className="flex-1 px-3 text-sand-300 hover:text-sand-600 hover:bg-sand-50 transition-colors duration-150 cursor-pointer rounded-r-xl"
               aria-label="Link actions"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

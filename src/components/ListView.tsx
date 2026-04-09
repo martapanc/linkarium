@@ -1,8 +1,27 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import type React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
 import { useWriteToken } from "@/lib/useWriteToken";
 import { LinkCard } from "./LinkCard";
@@ -12,6 +31,24 @@ import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
 import { WriteGuard } from "./WriteGuard";
+
+function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: props.link.id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0 : 1,
+      }}
+    >
+      <LinkCard {...props} dragHandleProps={{ ...attributes, ...listeners }} />
+    </div>
+  );
+}
 
 interface Props {
   list: DbList;
@@ -31,6 +68,44 @@ export function ListView({ list, initialLinks }: Props) {
   const [isAdding, setIsAdding] = useState(false);
 
   const canWrite = !!token;
+
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeLink = useMemo(() => links.find((l) => l.id === activeId) ?? null, [links, activeId]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  }, []);
+
+  const handleDragEnd = useCallback(
+    async (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      setLinks((prev) => {
+        const oldIndex = prev.findIndex((l) => l.id === active.id);
+        const newIndex = prev.findIndex((l) => l.id === over.id);
+        const reordered = arrayMove(prev, oldIndex, newIndex).map((l, i) => ({
+          ...l,
+          position: i,
+        }));
+
+        authFetch("/api/links", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, orderedIds: reordered.map((l) => l.id) }),
+        }).catch(() => toast.error("Failed to save order"));
+
+        return reordered;
+      });
+      setActiveId(null);
+    },
+    [list.id, authFetch],
+  );
 
   // Unique domains for filter dropdown
   const domains = useMemo(() => {
@@ -317,16 +392,44 @@ export function ListView({ list, initialLinks }: Props) {
             </div>
           ) : (
             <div className="mt-6 grid gap-3">
-              {filteredLinks.map((link, i) => (
-                <LinkCard
-                  key={link.id}
-                  link={link}
-                  index={i}
-                  onDelete={handleDelete}
-                  onRescrape={handleRescrape}
-                  canWrite={canWrite}
-                />
-              ))}
+              {canWrite && sort.field === "position" ? (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                  <SortableContext items={filteredLinks.map((l) => l.id)} strategy={verticalListSortingStrategy}>
+                    {filteredLinks.map((link, i) => (
+                      <SortableLinkCard
+                        key={link.id}
+                        link={link}
+                        index={i}
+                        onDelete={handleDelete}
+                        onRescrape={handleRescrape}
+                        canWrite={canWrite}
+                      />
+                    ))}
+                  </SortableContext>
+                  <DragOverlay dropAnimation={null}>
+                    {activeLink && (
+                      <LinkCard
+                        link={activeLink}
+                        index={0}
+                        onDelete={handleDelete}
+                        onRescrape={handleRescrape}
+                        canWrite={canWrite}
+                      />
+                    )}
+                  </DragOverlay>
+                </DndContext>
+              ) : (
+                filteredLinks.map((link, i) => (
+                  <LinkCard
+                    key={link.id}
+                    link={link}
+                    index={i}
+                    onDelete={handleDelete}
+                    onRescrape={handleRescrape}
+                    canWrite={canWrite}
+                  />
+                ))
+              )}
             </div>
           )}
         </div>
