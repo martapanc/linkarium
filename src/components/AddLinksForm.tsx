@@ -28,6 +28,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
   const [year, setYear] = useState("");
   const [venue, setVenue] = useState("");
   const [notes, setNotes] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
   const [isResolving, setIsResolving] = useState(false);
   const [resolveError, setResolveError] = useState("");
 
@@ -38,6 +39,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
     setYear("");
     setVenue("");
     setNotes("");
+    setPdfUrl("");
     setResolveError("");
   }
 
@@ -95,6 +97,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
     setAuthors(result.authors);
     setYear(result.year ? String(result.year) : "");
     setVenue(result.venue ?? "");
+    setPdfUrl(result.pdf_url ?? "");
   }
 
   async function handleAddPaper() {
@@ -107,6 +110,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
       citation_year: year ? parseInt(year, 10) : undefined,
       citation_venue: venue.trim() || undefined,
       description: notes.trim() || undefined,
+      pdf_url: pdfUrl.trim() || undefined,
     };
 
     await onAddPaper(paper);
@@ -332,8 +336,24 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-coral-300"
+              className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 resize-none focus:outline-none focus:border-coral-300"
             />
+
+            {/* PDF URL — auto-filled from OpenAlex, editable */}
+            <div className="relative">
+              <input
+                type="url"
+                placeholder="PDF URL (auto-filled if openly available)"
+                value={pdfUrl}
+                onChange={(e) => setPdfUrl(e.target.value)}
+                className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 pr-20 focus:outline-none focus:border-coral-300"
+              />
+              {pdfUrl && (
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-medium">
+                  PDF
+                </span>
+              )}
+            </div>
           </>
         )}
       </div>

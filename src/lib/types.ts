@@ -31,6 +31,7 @@ export interface DbLink {
   citation_authors: string | null;
   citation_year: number | null;
   citation_venue: string | null;
+  pdf_url: string | null;
 }
 
 // ============================================================
@@ -60,6 +61,7 @@ export interface PaperInput {
   citation_year?: number;
   citation_venue?: string;
   description?: string;
+  pdf_url?: string;
 }
 
 export interface ScrapeResult {

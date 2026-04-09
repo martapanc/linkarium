@@ -114,7 +114,18 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
                   DOI
                 </span>
               )}
-              {!link.url && (
+              {link.pdf_url && (
+                <a
+                  href={link.pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-1.5 py-0.5 rounded font-medium shrink-0 transition-colors"
+                >
+                  PDF
+                </a>
+              )}
+              {!link.url && !link.pdf_url && (
                 <span className="text-xs text-sand-300 shrink-0">no public link</span>
               )}
             </div>
@@ -152,7 +163,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
 
   return (
     <div
-      className="animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm overflow-hidden"
+      className="animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm"
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
       {/* Wrap in link only when there's a URL to open */}

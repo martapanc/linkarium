@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrls } from "@/lib/scraper";
 import { extractUrls } from "@/lib/url-parser";
+import { searchPaper, getPdfUrlUnpaywall } from "@/lib/doi-resolver";
 
 // POST /api/links — Add links (URLs or paper references) to an existing list
 export async function POST(request: NextRequest) {
@@ -63,7 +64,9 @@ export async function POST(request: NextRequest) {
       );
 
       let duplicatesSkipped = 0;
-      const rows: object[] = [];
+
+      // Filter duplicates first, then enrich in parallel
+      const toEnrich: Array<{ p: typeof paperList[0]; index: number }> = [];
 
       for (let i = 0; i < paperList.length; i++) {
         const p = paperList[i];
@@ -77,25 +80,76 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        rows.push({
-          list_id: listId,
-          link_type: "paper",
-          url: cleanDoi ? `https://doi.org/${cleanDoi}` : null,
-          title: p.title.trim(),
-          description: p.description?.trim() || null,
-          image_url: null,
-          favicon_url: null,
-          domain: cleanDoi ? "doi.org" : null,
-          position: nextPosition + i,
-          doi: cleanDoi,
-          citation_authors: p.citation_authors?.trim() || null,
-          citation_year: p.citation_year ?? null,
-          citation_venue: p.citation_venue?.trim() || null,
-        });
-
         if (cleanDoi) existingDois.add(cleanDoi);
         existingTitles.add(p.title.trim().toLowerCase());
+        toEnrich.push({ p, index: i });
       }
+
+      // Enrich with OpenAlex (title search) for papers that came without a DOI
+      // and without a pre-filled pdf_url (i.e. from batch citation paste)
+      const CONCURRENCY = 3;
+      const enriched: Array<{
+        p: typeof paperList[0];
+        index: number;
+        doi: string | null;
+        pdf_url: string | null;
+        title: string;
+        authors: string | null;
+        year: number | null;
+        venue: string | null;
+      }> = [];
+
+      for (let i = 0; i < toEnrich.length; i += CONCURRENCY) {
+        const batch = toEnrich.slice(i, i + CONCURRENCY);
+        const results = await Promise.all(
+          batch.map(async ({ p, index }) => {
+            let doi = p.doi?.trim() || null;
+            let pdf_url = p.pdf_url?.trim() || null;
+            let title = p.title.trim();
+            let authors = p.citation_authors?.trim() || null;
+            let year = p.citation_year ?? null;
+            let venue = p.citation_venue?.trim() || null;
+
+            // Only search OpenAlex when the paper was pasted without a DOI
+            if (!doi) {
+              const found = await searchPaper(title, year);
+              if (found) {
+                doi = found.doi;
+                pdf_url = pdf_url ?? found.pdf_url;
+                // Prefer provided metadata over OpenAlex for title/authors/venue
+                // (the user's citation is the source of truth)
+                if (!authors) authors = found.authors || null;
+                if (!venue) venue = found.venue;
+              }
+            }
+
+            // If we have a DOI but no PDF, try Unpaywall
+            if (doi && !pdf_url) {
+              pdf_url = await getPdfUrlUnpaywall(doi);
+            }
+
+            return { p, index, doi, pdf_url, title, authors, year, venue };
+          }),
+        );
+        enriched.push(...results);
+      }
+
+      const rows = enriched.map(({ p, index, doi, pdf_url, title, authors, year, venue }) => ({
+        list_id: listId,
+        link_type: "paper",
+        url: doi ? `https://doi.org/${doi}` : null,
+        title,
+        description: p.description?.trim() || null,
+        image_url: null,
+        favicon_url: null,
+        domain: doi ? "doi.org" : null,
+        position: nextPosition + index,
+        doi,
+        citation_authors: authors,
+        citation_year: year,
+        citation_venue: venue,
+        pdf_url,
+      }));
 
       if (rows.length === 0) {
         return NextResponse.json({ links: [], duplicatesSkipped });
