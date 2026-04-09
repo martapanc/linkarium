@@ -163,7 +163,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
 
   return (
     <div
-      className="animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm"
+      className={`animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm${menuOpen ? " z-10" : ""}`}
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
       {/* Wrap in link only when there's a URL to open */}
@@ -204,7 +204,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
         {menuOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-            <div className="absolute right-0 top-full mt-1 z-20 bg-white rounded-lg border border-sand-200 shadow-lg py-1 min-w-[160px]">
+            <div className="absolute right-0 top-full mt-1 z-50 bg-white rounded-lg border border-sand-200 shadow-lg py-1 min-w-[160px]">
               {link.url && (
                 <button
                   onClick={(e) => {
