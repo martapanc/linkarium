@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
 import { LinkCard } from "./LinkCard";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function ListView({ list, initialLinks }: Props) {
+  const router = useRouter();
   const [links, setLinks] = useState<DbLink[]>(initialLinks);
   const [search, setSearch] = useState("");
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
@@ -224,6 +226,14 @@ export function ListView({ list, initialLinks }: Props) {
     }
   }, []);
 
+  // Delete list handler
+  const handleDeleteList = useCallback(async () => {
+    const res = await fetch(`/api/lists?id=${list.id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error("Failed to delete");
+    toast.success("List deleted");
+    router.push("/");
+  }, [list.id, router]);
+
   // Sort change handler
   const handleSortChange = useCallback((field: SortField) => {
     setSort((prev) => ({
@@ -251,7 +261,7 @@ export function ListView({ list, initialLinks }: Props) {
       <main className="flex-1 px-4 sm:px-6 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {/* List header (editable title + description) */}
-          <ListHeader list={list} linkCount={links.length} />
+          <ListHeader list={list} linkCount={links.length} onDelete={handleDeleteList} />
 
           {/* Add links */}
           <div className="mt-8">

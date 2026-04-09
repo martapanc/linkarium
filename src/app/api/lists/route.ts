@@ -75,6 +75,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// DELETE /api/lists — Soft-delete a list
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "List ID required" }, { status: 400 });
+    }
+
+    const supabase = await createServerSupabase();
+
+    const { error } = await supabase
+      .from("lists")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id)
+      .is("deleted_at", null);
+
+    if (error) {
+      return NextResponse.json({ error: "Failed to delete list" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[api/lists] DELETE error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
 // PATCH /api/lists — Update list title/description
 export async function PATCH(request: NextRequest) {
   try {

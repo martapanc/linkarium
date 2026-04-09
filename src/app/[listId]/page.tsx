@@ -18,6 +18,7 @@ export async function generateMetadata({
     .from("lists")
     .select("*")
     .eq("id", listId)
+    .is("deleted_at", null)
     .single();
 
   if (!list) {
@@ -53,6 +54,7 @@ export default async function ListPage({ params }: PageProps) {
     .from("lists")
     .select("*")
     .eq("id", listId)
+    .is("deleted_at", null)
     .single();
 
   if (!list) notFound();

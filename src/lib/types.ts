@@ -9,6 +9,7 @@ export interface DbList {
   created_at: string;
   updated_at: string;
   expires_at: string | null;
+  deleted_at: string | null;
 }
 
 export type LinkType = "url" | "paper";

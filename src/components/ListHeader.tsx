@@ -7,13 +7,16 @@ import type { DbList } from "@/lib/types";
 interface Props {
   list: DbList;
   linkCount: number;
+  onDelete: () => Promise<void>;
 }
 
-export function ListHeader({ list, linkCount }: Props) {
+export function ListHeader({ list, linkCount, onDelete }: Props) {
   const [title, setTitle] = useState(list.title);
   const [description, setDescription] = useState(list.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const titleRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
@@ -49,6 +52,17 @@ export function ListHeader({ list, linkCount }: Props) {
     setIsEditingDesc(false);
     if (description.trim() !== (list.description || "")) {
       saveField("description", description.trim());
+    }
+  }
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    try {
+      await onDelete();
+    } catch {
+      toast.error("Failed to delete list");
+      setIsDeleting(false);
+      setConfirmDelete(false);
     }
   }
 
@@ -116,15 +130,43 @@ export function ListHeader({ list, linkCount }: Props) {
         </p>
       )}
 
-      {/* Meta */}
-      <p className="mt-3 text-xs text-sand-400">
-        {linkCount} link{linkCount !== 1 ? "s" : ""} · created{" "}
-        {new Date(list.created_at).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })}
-      </p>
+      {/* Meta + delete */}
+      <div className="mt-3 flex items-center gap-4">
+        <p className="text-xs text-sand-400">
+          {linkCount} link{linkCount !== 1 ? "s" : ""} · created{" "}
+          {new Date(list.created_at).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
+
+        {confirmDelete ? (
+          <span className="flex items-center gap-2 text-xs">
+            <span className="text-sand-500">Delete this list?</span>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="text-red-500 hover:text-red-700 font-medium disabled:opacity-50 cursor-pointer transition-colors"
+            >
+              {isDeleting ? "Deleting…" : "Yes, delete"}
+            </button>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="text-sand-400 hover:text-sand-600 cursor-pointer transition-colors"
+            >
+              Cancel
+            </button>
+          </span>
+        ) : (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer"
+          >
+            Delete list
+          </button>
+        )}
+      </div>
     </div>
   );
 }
