@@ -32,9 +32,10 @@ interface Props {
   index: number;
   onDelete: (id: string) => void;
   onRescrape: (link: DbLink) => void;
+  canWrite: boolean;
 }
 
-export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
+export function LinkCard({ link, index, onDelete, onRescrape, canWrite }: Props) {
   const [imgError, setImgError] = useState(false);
   const [isRescraping, setIsRescraping] = useState(false);
 
@@ -208,8 +209,8 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
         <div className="flex-1 min-w-0">{cardContent}</div>
       )}
 
-      {/* Action column — separate from the clickable area */}
-      <DropdownMenu.Root>
+      {/* Action column — only shown when write access is granted */}
+      {canWrite && <DropdownMenu.Root>
         <div className="shrink-0 flex items-center border-l border-sand-100">
           <DropdownMenu.Trigger asChild>
             <button
@@ -264,7 +265,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
             </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
-      </DropdownMenu.Root>
+      </DropdownMenu.Root>}
     </div>
   );
 }

@@ -3,12 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useWriteToken } from "@/lib/useWriteToken";
+import { WriteGuard } from "@/components/WriteGuard";
 
 export default function Home() {
   const router = useRouter();
+  const { token, authFetch } = useWriteToken();
   const [rawText, setRawText] = useState("");
   const [title, setTitle] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+
+  const canWrite = !!token;
 
   async function handleCreate() {
     setIsCreating(true);
@@ -18,7 +23,7 @@ export default function Home() {
         .map((s) => s.trim())
         .filter(Boolean);
 
-      const res = await fetch("/api/lists", {
+      const res = await authFetch("/api/lists", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -45,14 +50,17 @@ export default function Home() {
           <span className="font-display text-2xl text-sand-900 tracking-tight">
             Linkarium
           </span>
-          <a
-            href="https://github.com/martapanc/linkarium"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-sand-500 hover:text-sand-700 transition-colors"
-          >
-            GitHub
-          </a>
+          <div className="flex items-center gap-4">
+            <WriteGuard />
+            <a
+              href="https://github.com/martapanc/linkarium"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-sand-500 hover:text-sand-700 transition-colors"
+            >
+              GitHub
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -72,7 +80,12 @@ export default function Home() {
 
         {/* Create form */}
         <div className="max-w-2xl w-full">
-          <div className="bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden">
+          {!canWrite && (
+            <div className="mb-8 text-center text-sm text-sand-400">
+              <span>Unlock with the passphrase to create a list.</span>
+            </div>
+          )}
+          <div className={`bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden ${!canWrite ? "opacity-50 pointer-events-none select-none" : ""}`}>
             {/* Title input */}
             <div className="border-b border-sand-100 px-5 py-3">
               <input

@@ -3,10 +3,14 @@ import { nanoid } from "nanoid";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrls } from "@/lib/scraper";
 import { extractUrls } from "@/lib/url-parser";
+import { requireWriteToken } from "@/lib/write-auth";
 import type { CreateListRequest } from "@/lib/types";
 
 // POST /api/lists — Create a new list, optionally with initial URLs
 export async function POST(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const body = (await request.json()) as CreateListRequest;
     const supabase = await createServerSupabase();
@@ -77,6 +81,9 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/lists — Soft-delete a list
 export async function DELETE(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
@@ -106,6 +113,9 @@ export async function DELETE(request: NextRequest) {
 
 // PATCH /api/lists — Update list title/description
 export async function PATCH(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { id, title, description } = await request.json();
     if (!id) {

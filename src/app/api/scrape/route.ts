@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrl } from "@/lib/scraper";
 import { isValidUrl } from "@/lib/url-parser";
+import { requireWriteToken } from "@/lib/write-auth";
 
 // POST /api/scrape — Scrape (or re-scrape) metadata for a link
 export async function POST(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { url, linkId } = await request.json();
 

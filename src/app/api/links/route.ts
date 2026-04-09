@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrls } from "@/lib/scraper";
 import { extractUrls } from "@/lib/url-parser";
+import { requireWriteToken } from "@/lib/write-auth";
 
 // POST /api/links — Add links (URLs or paper references) to an existing list
 export async function POST(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const body = await request.json();
     const { listId } = body;
@@ -203,6 +207,9 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/links — Remove a link by ID
 export async function DELETE(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { searchParams } = new URL(request.url);
     const linkId = searchParams.get("id");
@@ -237,6 +244,9 @@ export async function DELETE(request: NextRequest) {
 
 // PUT /api/links — Reorder links
 export async function PUT(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { listId, orderedIds } = await request.json();
 

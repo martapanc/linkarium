@@ -9,9 +9,10 @@ interface Props {
   list: DbList;
   linkCount: number;
   onDelete: () => Promise<void>;
+  canWrite: boolean;
 }
 
-export function ListHeader({ list, linkCount, onDelete }: Props) {
+export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
   const [title, setTitle] = useState(list.title);
   const [description, setDescription] = useState(list.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -68,7 +69,7 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
   return (
     <div>
       {/* Title */}
-      {isEditingTitle ? (
+      {canWrite && isEditingTitle ? (
         <input
           ref={titleRef}
           value={title}
@@ -90,16 +91,16 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
         />
       ) : (
         <h1
-          onClick={() => setIsEditingTitle(true)}
-          className="font-display text-3xl md:text-4xl text-sand-900 cursor-text hover:text-coral-600 transition-colors leading-tight"
-          title="Click to edit"
+          onClick={() => canWrite && setIsEditingTitle(true)}
+          className={`font-display text-3xl md:text-4xl text-sand-900 leading-tight ${canWrite ? "cursor-text hover:text-coral-600 transition-colors" : ""}`}
+          title={canWrite ? "Click to edit" : undefined}
         >
           {title}
         </h1>
       )}
 
       {/* Description */}
-      {isEditingDesc ? (
+      {canWrite && isEditingDesc ? (
         <textarea
           ref={descRef}
           value={description}
@@ -121,11 +122,11 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
         />
       ) : (
         <p
-          onClick={() => setIsEditingDesc(true)}
-          className="mt-2 text-sand-400 text-[15px] cursor-text hover:text-sand-500 transition-colors leading-relaxed"
-          title="Click to edit"
+          onClick={() => canWrite && setIsEditingDesc(true)}
+          className={`mt-2 text-[15px] leading-relaxed ${canWrite ? "text-sand-400 cursor-text hover:text-sand-500 transition-colors" : "text-sand-400"}`}
+          title={canWrite ? "Click to edit" : undefined}
         >
-          {description || "Click to add a description…"}
+          {description || (canWrite ? "Click to add a description…" : "")}
         </p>
       )}
 
@@ -140,7 +141,7 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
           })}
         </p>
 
-        <AlertDialog.Root>
+        {canWrite && <AlertDialog.Root>
           <AlertDialog.Trigger asChild>
             <button className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer">
               Delete list
@@ -179,7 +180,7 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
               </div>
             </AlertDialog.Content>
           </AlertDialog.Portal>
-        </AlertDialog.Root>
+        </AlertDialog.Root>}
       </div>
     </div>
   );
