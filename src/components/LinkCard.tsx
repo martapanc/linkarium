@@ -3,6 +3,29 @@
 import { useState } from "react";
 import type { DbLink } from "@/lib/types";
 
+function PaperFavicon({ url }: { url: string }) {
+  const [error, setError] = useState(false);
+  let hostname = "";
+  try { hostname = new URL(url).hostname; } catch { /* ignore */ }
+
+  if (error || !hostname) {
+    return (
+      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-coral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      </svg>
+    );
+  }
+
+  return (
+    <img
+      src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=64`}
+      alt=""
+      className="w-5 h-5 sm:w-6 sm:h-6"
+      onError={() => setError(true)}
+    />
+  );
+}
+
 interface Props {
   link: DbLink;
   index: number;
@@ -30,20 +53,24 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
       {/* Thumbnail / icon */}
       <div className="shrink-0 mt-0.5">
         {isPaper ? (
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-coral-50 flex items-center justify-center">
-            <svg
-              className="w-5 h-5 sm:w-6 sm:h-6 text-coral-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-              />
-            </svg>
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-coral-50 flex items-center justify-center overflow-hidden">
+            {link.url ? (
+              <PaperFavicon url={link.url} />
+            ) : (
+              <svg
+                className="w-5 h-5 sm:w-6 sm:h-6 text-coral-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                />
+              </svg>
+            )}
           </div>
         ) : hasImage ? (
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-sand-100">
@@ -87,28 +114,25 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <h3 className="text-[15px] font-medium text-sand-900 leading-snug line-clamp-2">
-          {link.title || link.url || "Untitled paper"}
-        </h3>
-
         {isPaper ? (
           <>
-            {(link.citation_authors || link.citation_year) && (
-              <p className="text-sm text-sand-500 mt-0.5 truncate">
-                {[link.citation_authors, link.citation_year].filter(Boolean).join(" · ")}
+            <p className="text-[15px] font-medium text-sand-900 leading-snug line-clamp-3">
+              {link.citation_authors && <>{link.citation_authors}, </>}
+              {link.title && <em>{link.title}</em>}
+              {link.citation_venue && <>, {link.citation_venue}</>}
+              {link.citation_year && <>, {link.citation_year}</>}
+            </p>
+            {link.url && (
+              <p className="text-xs text-sand-400 truncate min-w-0 mt-1">
+                {link.url}
               </p>
             )}
             {link.description && (
-              <p className="text-sm text-sand-400 mt-0.5 line-clamp-2 leading-relaxed">
+              <p className="text-sm text-sand-400 mt-1 line-clamp-2 leading-relaxed">
                 {link.description}
               </p>
             )}
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              {link.citation_venue && (
-                <span className="text-xs text-sand-400 italic truncate max-w-[200px]">
-                  {link.citation_venue}
-                </span>
-              )}
               {link.doi && (
                 <span className="text-xs bg-coral-50 text-coral-500 px-1.5 py-0.5 rounded font-mono shrink-0">
                   DOI
@@ -132,13 +156,16 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
           </>
         ) : (
           <>
+            <h3 className="text-[15px] font-medium text-sand-900 leading-snug line-clamp-2">
+              {link.title || link.url || "Untitled"}
+            </h3>
             {link.description && (
               <p className="text-sm text-sand-500 mt-0.5 line-clamp-2 leading-relaxed">
                 {link.description}
               </p>
             )}
-            <div className="flex items-center gap-2 mt-1.5">
-              <span className="text-xs text-sand-400 truncate">
+            <div className="flex items-center gap-2 mt-1.5 min-w-0">
+              <span className="text-xs text-sand-400 truncate min-w-0">
                 {link.domain || link.url}
               </span>
               <svg
@@ -166,13 +193,18 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
       className={`animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm${menuOpen ? " z-10" : ""}`}
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
-      {/* Wrap in link only when there's a URL to open */}
-      {link.url ? (
-        <a
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* Wrap in link only when there's a URL to open.
+          Paper cards use onClick instead of <a> to avoid nesting <a> inside <a>
+          (the PDF badge inside cardContent is already an <a>). */}
+      {link.url && isPaper ? (
+        <div
+          className="cursor-pointer"
+          onClick={() => window.open(link.url!, "_blank", "noopener,noreferrer")}
         >
+          {cardContent}
+        </div>
+      ) : link.url ? (
+        <a href={link.url} target="_blank" rel="noopener noreferrer">
           {cardContent}
         </a>
       ) : (
@@ -188,7 +220,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
             setMenuOpen(!menuOpen);
           }}
           className="
-            opacity-0 group-hover:opacity-100 focus:opacity-100
+            opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100
             p-1.5 rounded-lg
             text-sand-400 hover:text-sand-600 hover:bg-sand-100
             transition-all duration-150
