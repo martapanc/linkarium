@@ -138,23 +138,6 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
           </svg>
           Add links
         </button>
-        <button
-          onClick={() => setMode("paper")}
-          className="
-            flex-1 border-2 border-dashed border-sand-200 rounded-xl
-            py-4 px-5
-            text-sand-400 hover:text-coral-500 hover:border-coral-300
-            transition-all duration-200
-            flex items-center justify-center gap-2
-            text-sm font-medium
-            cursor-pointer
-          "
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-          </svg>
-          Add paper reference
-        </button>
       </div>
     );
   }
@@ -241,13 +224,13 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
               Paste citations in the format:
               <br />
               <span className="font-mono text-sand-500">
-                [Key] Authors, _Title_, Journal / Venue, Year
+                [Key] Authors, _Title_, Journal / Venue, Year: URL
               </span>
             </p>
             <textarea
               autoFocus
               placeholder={
-                "[Archer 1999] John Archer, _Assessment of the Reliability of the Conflict Tactics Scales_, Journal of Interpersonal Violence, 1999\n\n[Smith et al. 2020] Jane Smith, Bob Lee, _Title of the Paper_, Nature, 2020"
+                "[Archer 1999] John Archer, _Assessment of the Reliability of the Conflict Tactics Scales_, Journal of Interpersonal Violence, 1999: https://example.com/paper.pdf\n\n[Smith et al. 2020] Jane Smith, Bob Lee, _Title of the Paper_, Nature, 2020: https://doi.org/10.1234/example"
               }
               value={batchText}
               onChange={(e) => handleBatchTextChange(e.target.value)}

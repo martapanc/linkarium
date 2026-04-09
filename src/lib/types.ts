@@ -56,6 +56,7 @@ export interface AddLinksRequest {
 
 export interface PaperInput {
   title: string;
+  url?: string;
   doi?: string;
   citation_authors?: string;
   citation_year?: number;

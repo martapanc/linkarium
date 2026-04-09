@@ -9,8 +9,8 @@ import type { PaperInput } from "./types";
  *   [Desmarais et al. 2012] Sarah L. Desmarais, ..., _Prevalence..._, Partner Abuse, Vol 3 n.2, 2012
  */
 
-// Matches: [Key] Authors, _Title_, Venue (may have commas), Year
-const CITATION_RE = /^\[([^\]]+)\]\s+(.*?),\s*_(.+?)_,\s*(.*),\s*(\d{4})\s*$/;
+// Matches: [Key] Authors, _Title_, Venue (may have commas), Year[: URL]
+const CITATION_RE = /^\[([^\]]+)\]\s+(.*?),\s*_(.+?)_,\s*(.*),\s*(\d{4})(?:\s*:\s*(.+?))?\s*$/;
 
 export interface ParsedCitation extends PaperInput {
   key: string; // the [Key] part, for display/dedup
@@ -26,7 +26,7 @@ export function parseCitations(text: string): ParsedCitation[] {
     const m = line.match(CITATION_RE);
     if (!m) continue;
 
-    const [, key, authors, title, venue, yearStr] = m;
+    const [, key, authors, title, venue, yearStr, urlStr] = m;
 
     results.push({
       key: key.trim(),
@@ -34,6 +34,7 @@ export function parseCitations(text: string): ParsedCitation[] {
       citation_authors: authors.trim() || undefined,
       citation_year: parseInt(yearStr, 10),
       citation_venue: venue.trim() || undefined,
+      url: urlStr?.trim() || undefined,
     });
   }
 

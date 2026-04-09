@@ -64,8 +64,8 @@ export default function Home() {
             <br />
             <span className="text-coral-500 italic">Share the list.</span>
           </h1>
-          <p className="text-lg text-sand-500 max-w-md mx-auto">
-            Paste URLs or academic paper references, get a clean shareable page.
+          <p className="text-lg text-sand-500 max-w-md mx-auto text-pretty">
+            Paste URLs, get a clean shareable page.<br/>
             No signup needed.
           </p>
         </div>
