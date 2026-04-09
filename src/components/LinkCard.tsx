@@ -190,42 +190,30 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
 
   return (
     <div
-      className={`animate-fade-up group relative bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm${menuOpen ? " z-10" : ""}`}
+      className={`animate-fade-up flex bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm${menuOpen ? " z-10" : ""}`}
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
-      {/* Wrap in link only when there's a URL to open.
-          Paper cards use onClick instead of <a> to avoid nesting <a> inside <a>
-          (the PDF badge inside cardContent is already an <a>). */}
+      {/* Main clickable area */}
       {link.url && isPaper ? (
         <div
-          className="cursor-pointer"
+          className="flex-1 min-w-0 cursor-pointer"
           onClick={() => window.open(link.url!, "_blank", "noopener,noreferrer")}
         >
           {cardContent}
         </div>
       ) : link.url ? (
-        <a href={link.url} target="_blank" rel="noopener noreferrer">
+        <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0">
           {cardContent}
         </a>
       ) : (
-        cardContent
+        <div className="flex-1 min-w-0">{cardContent}</div>
       )}
 
-      {/* Action menu button */}
-      <div className="absolute top-3 right-3">
+      {/* Action column — separate from the clickable area */}
+      <div className="relative shrink-0 flex items-center border-l border-sand-100">
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setMenuOpen(!menuOpen);
-          }}
-          className="
-            opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100
-            p-1.5 rounded-lg
-            text-sand-400 hover:text-sand-600 hover:bg-sand-100
-            transition-all duration-150
-            cursor-pointer
-          "
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="h-full px-3 text-sand-300 hover:text-sand-600 hover:bg-sand-50 transition-colors duration-150 cursor-pointer rounded-r-xl"
           aria-label="Link actions"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -239,8 +227,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
             <div className="absolute right-0 top-full mt-1 z-50 bg-white rounded-lg border border-sand-200 shadow-lg py-1 min-w-[160px]">
               {link.url && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={() => {
                     navigator.clipboard.writeText(link.url!);
                     setMenuOpen(false);
                   }}
@@ -254,10 +241,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
               )}
               {!isPaper && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRescrape();
-                  }}
+                  onClick={() => { handleRescrape(); }}
                   disabled={isRescraping}
                   className="w-full text-left px-3 py-2 text-sm text-sand-700 hover:bg-sand-50 flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
@@ -269,8 +253,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
               )}
               <div className="border-t border-sand-100 my-1" />
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   setMenuOpen(false);
                   onDelete(link.id);
                 }}
