@@ -1,5 +1,6 @@
 "use client";
 
+import * as Select from "@radix-ui/react-select";
 import type { SortConfig, SortField } from "@/lib/types";
 
 interface Props {
@@ -20,6 +21,18 @@ const SORT_OPTIONS: { field: SortField; label: string }[] = [
   { field: "title", label: "Title" },
   { field: "domain", label: "Domain" },
 ];
+
+const ChevronDownIcon = () => (
+  <svg className="w-3.5 h-3.5 text-sand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+  </svg>
+);
 
 export function SearchFilterBar({
   search,
@@ -78,29 +91,7 @@ export function SearchFilterBar({
 
       {/* Filter row */}
       <div className="flex flex-wrap items-center gap-2">
-        {/* Domain filter */}
-        {domains.length > 1 && (
-          <select
-            value={domainFilter || ""}
-            onChange={(e) =>
-              onDomainFilterChange(e.target.value || null)
-            }
-            className="
-              text-xs px-3 py-1.5
-              bg-white border border-sand-200 rounded-lg
-              text-sand-600
-              focus:outline-none focus:border-sand-300
-              cursor-pointer
-            "
-          >
-            <option value="">All domains</option>
-            {domains.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        )}
+
 
         {/* Sort */}
         <div className="flex items-center gap-1">
@@ -125,6 +116,81 @@ export function SearchFilterBar({
               )}
             </button>
           ))}
+
+          {/* Domain filter */}
+          {domains.length > 1 && (
+              <Select.Root
+                  value={domainFilter ?? "__all__"}
+                  onValueChange={(v) => onDomainFilterChange(v === "__all__" ? null : v)}
+              >
+                <Select.Trigger
+                    className="
+                inline-flex items-center gap-1.5 min-w-32
+                text-xs px-3 py-1.5
+                bg-white border border-sand-200 rounded-lg
+                text-sand-600 hover:border-sand-300
+                focus:outline-none
+                cursor-pointer transition-colors
+                data-[state=open]:border-coral-300 data-[state=open]:text-coral-600
+              "
+                >
+                  <Select.Value>{domainFilter ?? "All domains"}</Select.Value>
+                  <Select.Icon>
+                    <ChevronDownIcon />
+                  </Select.Icon>
+                </Select.Trigger>
+
+                <Select.Portal>
+                  <Select.Content
+                      position="popper"
+                      sideOffset={4}
+                      className="
+                  z-50 min-w-40 max-h-60
+                  bg-white rounded-lg border border-sand-200 shadow-lg
+                  overflow-hidden
+                  animate-in fade-in-0 zoom-in-95
+                "
+                  >
+                    <Select.Viewport className="p-1">
+                      <Select.Item
+                          value="__all__"
+                          className="
+                      flex items-center justify-between
+                      px-3 py-2 text-xs text-sand-500
+                      rounded-md cursor-pointer outline-none
+                      hover:bg-sand-50 data-highlighted:bg-sand-50
+                    "
+                      >
+                        <Select.ItemText>All domains</Select.ItemText>
+                        <Select.ItemIndicator>
+                          <CheckIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+
+                      <Select.Separator className="border-t border-sand-100 my-1" />
+
+                      {domains.map((d) => (
+                          <Select.Item
+                              key={d}
+                              value={d}
+                              className="
+                        flex items-center justify-between
+                        px-3 py-2 text-xs text-sand-700
+                        rounded-md cursor-pointer outline-none
+                        hover:bg-sand-50 data-highlighted:bg-sand-50
+                      "
+                          >
+                            <Select.ItemText>{d}</Select.ItemText>
+                            <Select.ItemIndicator>
+                              <CheckIcon />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                      ))}
+                    </Select.Viewport>
+                  </Select.Content>
+                </Select.Portal>
+              </Select.Root>
+          )}
         </div>
 
         {/* Result count */}
