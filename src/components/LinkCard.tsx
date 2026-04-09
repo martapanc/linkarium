@@ -122,7 +122,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
               {link.citation_year && <>, {link.citation_year}</>}
             </p>
             {link.url && (
-              <p className="text-xs text-sand-400 truncate min-w-0 mt-1">
+              <p className="text-xs text-sand-400 truncate mt-1">
                 {link.url}
               </p>
             )}
@@ -155,7 +155,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
           </>
         ) : (
           <>
-            <h3 className="text-[15px] font-medium text-sand-900 leading-snug line-clamp-2">
+            <h3 className={`text-[15px] font-medium text-sand-900 leading-snug line-clamp-2 ${!link.title ? "break-all" : ""}`}>
               {link.title || link.url || "Untitled"}
             </h3>
             {link.description && (
@@ -189,7 +189,7 @@ export function LinkCard({ link, index, onDelete, onRescrape }: Props) {
 
   return (
     <div
-      className="animate-fade-up flex bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm"
+      className="animate-fade-up flex min-w-0 bg-white rounded-xl border border-sand-200 hover:border-sand-300 transition-all duration-200 hover:shadow-sm"
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
     >
       {/* Main clickable area */}
