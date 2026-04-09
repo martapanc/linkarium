@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
 import type { DbList } from "@/lib/types";
 
@@ -15,7 +16,6 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
   const [description, setDescription] = useState(list.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDesc, setIsEditingDesc] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -62,7 +62,6 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
     } catch {
       toast.error("Failed to delete list");
       setIsDeleting(false);
-      setConfirmDelete(false);
     }
   }
 
@@ -141,31 +140,46 @@ export function ListHeader({ list, linkCount, onDelete }: Props) {
           })}
         </p>
 
-        {confirmDelete ? (
-          <span className="flex items-center gap-2 text-xs">
-            <span className="text-sand-500">Delete this list?</span>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="text-red-500 hover:text-red-700 font-medium disabled:opacity-50 cursor-pointer transition-colors"
-            >
-              {isDeleting ? "Deleting…" : "Yes, delete"}
+        <AlertDialog.Root>
+          <AlertDialog.Trigger asChild>
+            <button className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer">
+              Delete list
             </button>
-            <button
-              onClick={() => setConfirmDelete(false)}
-              className="text-sand-400 hover:text-sand-600 cursor-pointer transition-colors"
-            >
-              Cancel
-            </button>
-          </span>
-        ) : (
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer"
-          >
-            Delete list
-          </button>
-        )}
+          </AlertDialog.Trigger>
+
+          <AlertDialog.Portal>
+            <AlertDialog.Overlay className="fixed inset-0 z-40 bg-black/30 animate-in fade-in-0" />
+            <AlertDialog.Content className="
+              fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+              w-full max-w-md bg-white rounded-2xl shadow-xl p-6
+              animate-in fade-in-0 zoom-in-95
+            ">
+              <AlertDialog.Title className="text-lg font-semibold text-sand-900">
+                Delete this list?
+              </AlertDialog.Title>
+              <AlertDialog.Description className="mt-2 text-sm text-sand-500">
+                This will permanently delete <span className="font-medium text-sand-700">"{title}"</span> and all its links. This action cannot be undone.
+              </AlertDialog.Description>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <AlertDialog.Cancel asChild>
+                  <button className="px-4 py-2 text-sm font-medium text-sand-600 bg-sand-100 hover:bg-sand-200 rounded-lg transition-colors cursor-pointer">
+                    Cancel
+                  </button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action asChild>
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {isDeleting ? "Deleting…" : "Yes, delete"}
+                  </button>
+                </AlertDialog.Action>
+              </div>
+            </AlertDialog.Content>
+          </AlertDialog.Portal>
+        </AlertDialog.Root>
       </div>
     </div>
   );

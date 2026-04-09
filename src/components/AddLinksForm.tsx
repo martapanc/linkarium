@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import * as Tabs from "@radix-ui/react-tabs";
 import { resolveDoi, isDoiPattern } from "@/lib/doi-resolver";
 import { parseCitations, looksLikeCitations } from "@/lib/citation-parser";
 import type { PaperInput } from "@/lib/types";
@@ -206,195 +207,162 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
   // mode === "paper"
   return (
-    <div className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm">
-      {/* Tabs */}
-      <div className="flex border-b border-sand-100">
+    <Tabs.Root
+      defaultValue="manual"
+      className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm"
+    >
+      <Tabs.List className="flex border-b border-sand-100">
         {(["manual", "batch"] as const).map((tab) => (
-          <button
+          <Tabs.Trigger
             key={tab}
-            onClick={() => setPaperTab(tab)}
-            className={`
+            value={tab}
+            className="
               flex-1 py-3 text-sm font-medium transition-colors cursor-pointer
-              ${paperTab === tab
-                ? "text-coral-500 border-b-2 border-coral-400 -mb-px"
-                : "text-sand-400 hover:text-sand-600"
-              }
-            `}
+              text-sand-400 hover:text-sand-600
+              data-[state=active]:text-coral-500 data-[state=active]:border-b-2
+              data-[state=active]:border-coral-400 data-[state=active]:-mb-px
+              focus-visible:outline-none
+            "
           >
             {tab === "manual" ? "Single paper" : "Paste citations"}
-          </button>
+          </Tabs.Trigger>
         ))}
-      </div>
+      </Tabs.List>
 
-      <div className="px-5 pt-4 pb-2">
-        {paperTab === "batch" ? (
-          <>
-            <p className="text-xs text-sand-400 mb-3 leading-relaxed">
-              Paste citations in the format:
-              <br />
-              <span className="font-mono text-sand-500">
-                [Key] Authors, _Title_, Journal / Venue, Year: URL
-              </span>
-            </p>
-            <textarea
-              autoFocus
-              placeholder={
-                "[Archer 1999] John Archer, _Assessment of the Reliability of the Conflict Tactics Scales_, Journal of Interpersonal Violence, 1999: https://example.com/paper.pdf\n\n[Smith et al. 2020] Jane Smith, Bob Lee, _Title of the Paper_, Nature, 2020: https://doi.org/10.1234/example"
-              }
-              value={batchText}
-              onChange={(e) => handleBatchTextChange(e.target.value)}
-              rows={8}
-              className="w-full text-sm text-sand-800 placeholder:text-sand-300 font-mono border border-sand-200 rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:border-coral-300"
-            />
-            {batchText.trim() && (
-              <p className={`text-xs mt-1.5 ${parsedCount > 0 ? "text-coral-500" : "text-amber-500"}`}>
-                {parsedCount > 0
-                  ? `${parsedCount} citation${parsedCount !== 1 ? "s" : ""} detected`
-                  : "No citations recognised — check the format"}
-              </p>
-            )}
-          </>
-        ) : (
-          <>
-            {/* DOI row */}
-            <div className="flex gap-2 mb-4">
-              <input
-                autoFocus
-                type="text"
-                placeholder="DOI — e.g. 10.1145/3290605.3300756"
-                value={doi}
-                onChange={(e) => {
-                  setDoi(e.target.value);
-                  setResolveError("");
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleLookupDoi();
-                }}
-                className="flex-1 text-sm text-sand-800 placeholder:text-sand-300 font-mono border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
-              />
-              <button
-                onClick={handleLookupDoi}
-                disabled={isResolving || !doi.trim()}
-                className="
-                  text-sm font-medium px-4 py-2 rounded-lg
-                  border border-sand-200 text-sand-600 hover:border-coral-300 hover:text-coral-600
-                  transition-colors disabled:opacity-40 disabled:cursor-not-allowed
-                  cursor-pointer shrink-0
-                "
-              >
-                {isResolving ? spinnerIcon : "Look up"}
-              </button>
-            </div>
-
-            {resolveError && (
-              <p className="text-xs text-amber-600 mb-3">{resolveError}</p>
-            )}
-
-            <input
-              type="text"
-              placeholder="Title *"
-              value={paperTitle}
-              onChange={(e) => setPaperTitle(e.target.value)}
-              className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
-            />
-
-            <div className="flex gap-2 mb-2.5">
-              <input
-                type="text"
-                placeholder="Authors"
-                value={authors}
-                onChange={(e) => setAuthors(e.target.value)}
-                className="flex-1 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
-              />
-              <input
-                type="number"
-                placeholder="Year"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                className="w-24 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
-              />
-            </div>
-
-            <input
-              type="text"
-              placeholder="Journal / Conference"
-              value={venue}
-              onChange={(e) => setVenue(e.target.value)}
-              className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
-            />
-
-            <textarea
-              placeholder="Notes (optional)"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 resize-none focus:outline-none focus:border-coral-300"
-            />
-
-            {/* PDF URL — auto-filled from OpenAlex, editable */}
-            <div className="relative">
-              <input
-                type="url"
-                placeholder="PDF URL (auto-filled if openly available)"
-                value={pdfUrl}
-                onChange={(e) => setPdfUrl(e.target.value)}
-                className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 pr-20 focus:outline-none focus:border-coral-300"
-              />
-              {pdfUrl && (
-                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-medium">
-                  PDF
-                </span>
-              )}
-            </div>
-          </>
+      {/* Batch tab */}
+      <Tabs.Content value="batch" className="px-5 pt-4 pb-2">
+        <p className="text-xs text-sand-400 mb-3 leading-relaxed">
+          Paste citations in the format:
+          <br />
+          <span className="font-mono text-sand-500">
+            [Key] Authors, _Title_, Journal / Venue, Year: URL
+          </span>
+        </p>
+        <textarea
+          autoFocus
+          placeholder={
+            "[Archer 1999] John Archer, _Assessment of the Reliability of the Conflict Tactics Scales_, Journal of Interpersonal Violence, 1999: https://example.com/paper.pdf\n\n[Smith et al. 2020] Jane Smith, Bob Lee, _Title of the Paper_, Nature, 2020: https://doi.org/10.1234/example"
+          }
+          value={batchText}
+          onChange={(e) => handleBatchTextChange(e.target.value)}
+          rows={8}
+          className="w-full text-sm text-sand-800 placeholder:text-sand-300 font-mono border border-sand-200 rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:border-coral-300"
+        />
+        {batchText.trim() && (
+          <p className={`text-xs mt-1.5 ${parsedCount > 0 ? "text-coral-500" : "text-amber-500"}`}>
+            {parsedCount > 0
+              ? `${parsedCount} citation${parsedCount !== 1 ? "s" : ""} detected`
+              : "No citations recognised — check the format"}
+          </p>
         )}
-      </div>
-
-      <div className="border-t border-sand-100 px-5 py-3 flex items-center justify-between">
-        <button
-          onClick={close}
-          className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer"
-        >
-          Cancel
-        </button>
-        {paperTab === "batch" ? (
+        <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
+          <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
+            Cancel
+          </button>
           <button
             onClick={handleAddBatch}
             disabled={isAdding || parsedCount === 0}
-            className="
-              bg-coral-500 hover:bg-coral-600 text-white
-              text-sm font-medium px-5 py-2 rounded-lg
-              transition-colors duration-150
-              disabled:opacity-50 disabled:cursor-not-allowed
-              cursor-pointer
-            "
+            className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isAdding ? (
-              <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
-            ) : (
-              `Add ${parsedCount > 0 ? parsedCount : ""} paper${parsedCount !== 1 ? "s" : ""}`
-            )}
+            {isAdding
+              ? <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
+              : `Add ${parsedCount > 0 ? parsedCount : ""} paper${parsedCount !== 1 ? "s" : ""}`
+            }
           </button>
-        ) : (
+        </div>
+      </Tabs.Content>
+
+      {/* Manual tab */}
+      <Tabs.Content value="manual" className="px-5 pt-4 pb-2">
+        <div className="flex gap-2 mb-4">
+          <input
+            autoFocus
+            type="text"
+            placeholder="DOI — e.g. 10.1145/3290605.3300756"
+            value={doi}
+            onChange={(e) => { setDoi(e.target.value); setResolveError(""); }}
+            onKeyDown={(e) => { if (e.key === "Enter") handleLookupDoi(); }}
+            className="flex-1 text-sm text-sand-800 placeholder:text-sand-300 font-mono border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
+          />
+          <button
+            onClick={handleLookupDoi}
+            disabled={isResolving || !doi.trim()}
+            className="text-sm font-medium px-4 py-2 rounded-lg border border-sand-200 text-sand-600 hover:border-coral-300 hover:text-coral-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+          >
+            {isResolving ? spinnerIcon : "Look up"}
+          </button>
+        </div>
+
+        {resolveError && <p className="text-xs text-amber-600 mb-3">{resolveError}</p>}
+
+        <input
+          type="text"
+          placeholder="Title *"
+          value={paperTitle}
+          onChange={(e) => setPaperTitle(e.target.value)}
+          className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
+        />
+        <div className="flex gap-2 mb-2.5">
+          <input
+            type="text"
+            placeholder="Authors"
+            value={authors}
+            onChange={(e) => setAuthors(e.target.value)}
+            className="flex-1 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
+          />
+          <input
+            type="number"
+            placeholder="Year"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="w-24 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
+          />
+        </div>
+        <input
+          type="text"
+          placeholder="Journal / Conference"
+          value={venue}
+          onChange={(e) => setVenue(e.target.value)}
+          className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
+        />
+        <textarea
+          placeholder="Notes (optional)"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows={2}
+          className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 resize-none focus:outline-none focus:border-coral-300"
+        />
+        <div className="relative">
+          <input
+            type="url"
+            placeholder="PDF URL (auto-filled if openly available)"
+            value={pdfUrl}
+            onChange={(e) => setPdfUrl(e.target.value)}
+            className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 pr-20 focus:outline-none focus:border-coral-300"
+          />
+          {pdfUrl && (
+            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-medium">
+              PDF
+            </span>
+          )}
+        </div>
+
+        <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
+          <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
+            Cancel
+          </button>
           <button
             onClick={handleAddPaper}
             disabled={isAdding || !paperTitle.trim()}
-            className="
-              bg-coral-500 hover:bg-coral-600 text-white
-              text-sm font-medium px-5 py-2 rounded-lg
-              transition-colors duration-150
-              disabled:opacity-50 disabled:cursor-not-allowed
-              cursor-pointer
-            "
+            className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isAdding ? (
-              <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
-            ) : (
-              "Add paper"
-            )}
+            {isAdding
+              ? <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
+              : "Add paper"
+            }
           </button>
-        )}
-      </div>
-    </div>
+        </div>
+      </Tabs.Content>
+    </Tabs.Root>
   );
 }
