@@ -93,33 +93,9 @@ export function SearchFilterBar({
       <div className="flex flex-wrap items-center gap-2">
 
 
-        {/* Sort */}
-        <div className="flex items-center gap-1">
-          {SORT_OPTIONS.map((opt) => (
-            <button
-              key={opt.field}
-              onClick={() => onSortChange(opt.field)}
-              className={`
-                text-xs px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer
-                ${
-                  sort.field === opt.field
-                    ? "bg-sand-900 text-white"
-                    : "bg-sand-100 text-sand-500 hover:bg-sand-200"
-                }
-              `}
-            >
-              {opt.label}
-              {sort.field === opt.field && (
-                <span className="ml-1">
-                  {sort.direction === "asc" ? "↑" : "↓"}
-                </span>
-              )}
-            </button>
-          ))}
-
-          {/* Domain filter */}
-          {domains.length > 1 && (
-              <Select.Root
+        {/* Domain filter */}
+        {domains.length > 1 && (
+          <Select.Root
                   value={domainFilter ?? "__all__"}
                   onValueChange={(v) => onDomainFilterChange(v === "__all__" ? null : v)}
               >
@@ -190,7 +166,31 @@ export function SearchFilterBar({
                   </Select.Content>
                 </Select.Portal>
               </Select.Root>
-          )}
+        )}
+
+        {/* Sort */}
+        <div className="flex flex-wrap items-center gap-1">
+          {SORT_OPTIONS.map((opt) => (
+            <button
+              key={opt.field}
+              onClick={() => onSortChange(opt.field)}
+              className={`
+                text-xs px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer
+                ${
+                  sort.field === opt.field
+                    ? "bg-sand-900 text-white"
+                    : "bg-sand-100 text-sand-500 hover:bg-sand-200"
+                }
+              `}
+            >
+              {opt.label}
+              {sort.field === opt.field && (
+                <span className="ml-1">
+                  {sort.direction === "asc" ? "↑" : "↓"}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
 
         {/* Result count */}
