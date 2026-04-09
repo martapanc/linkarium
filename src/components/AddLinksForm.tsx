@@ -68,6 +68,15 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
   async function handleAddLinks() {
     if (!text.trim()) return;
+    if (looksLikeCitations(text)) {
+      const papers = parseCitations(text);
+      if (papers.length) {
+        await onAddPapers(papers);
+        setText("");
+        setMode("closed");
+        return;
+      }
+    }
     await onAdd(text);
     setText("");
     setMode("closed");
@@ -147,7 +156,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
       <div className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm">
         <textarea
           autoFocus
-          placeholder="Paste URLs here — one per line or mixed in with text"
+          placeholder="Paste URLs or citations — one per line&#10;[Cushman 2006] Penni Cushman, _Title_, Journal, 2006: https://..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
