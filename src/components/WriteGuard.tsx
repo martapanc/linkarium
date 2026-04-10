@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
 
 interface Props {
-  /** Called after the user successfully unlocks. Pass a function that verifies the token. */
   onUnlock?: () => void;
 }
 
 export function WriteGuard({ onUnlock }: Props) {
+  const t = useTranslations("writeGuard");
   const { token, ready, save, clear } = useWriteToken();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -25,7 +26,6 @@ export function WriteGuard({ onUnlock }: Props) {
     setIsVerifying(true);
     setError("");
 
-    // Probe a write endpoint with the candidate token to verify it server-side
     const res = await fetch("/api/auth/verify-write-token", {
       method: "POST",
       headers: {
@@ -42,7 +42,7 @@ export function WriteGuard({ onUnlock }: Props) {
       setInput("");
       onUnlock?.();
     } else {
-      setError("Wrong passphrase.");
+      setError(t("wrongPassphrase"));
     }
   }
 
@@ -57,7 +57,7 @@ export function WriteGuard({ onUnlock }: Props) {
             setError("");
           }
         }}
-        title={unlocked ? "Click to lock" : "Enter passphrase to edit"}
+        title={unlocked ? t("lockTitle") : t("unlockTitle")}
         className="flex items-center gap-1.5 text-xs text-sand-400 hover:text-sand-600 transition-colors cursor-pointer"
       >
         {unlocked ? (
@@ -73,13 +73,12 @@ export function WriteGuard({ onUnlock }: Props) {
 
       {open && !unlocked && (
         <>
-          {/* backdrop */}
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <form
             onSubmit={handleSubmit}
             className="absolute right-0 top-8 z-50 bg-white rounded-xl border border-sand-200 shadow-lg p-4 w-64"
           >
-            <p className="text-xs font-medium text-sand-700 mb-2">Enter passphrase</p>
+            <p className="text-xs font-medium text-sand-700 mb-2">{t("enterPassphrase")}</p>
             <input
               autoFocus
               type="password"
@@ -94,7 +93,7 @@ export function WriteGuard({ onUnlock }: Props) {
               disabled={isVerifying || !input.trim()}
               className="w-full bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium py-2 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {isVerifying ? "Checking…" : "Unlock"}
+              {isVerifying ? t("checking") : t("unlock")}
             </button>
           </form>
         </>

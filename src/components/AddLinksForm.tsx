@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useTranslations } from "next-intl";
 import { resolveDoi, isDoiPattern } from "@/lib/doi-resolver";
 import { parseCitations, looksLikeCitations } from "@/lib/citation-parser";
 import type { PaperInput } from "@/lib/types";
@@ -16,6 +17,7 @@ interface Props {
 type Mode = "closed" | "links" | "paper";
 
 export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props) {
+  const t = useTranslations("addLinks");
   const [mode, setMode] = useState<Mode>("closed");
   const [text, setText] = useState("");
   const [paperTab, setPaperTab] = useState<"manual" | "batch">("manual");
@@ -88,7 +90,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
     if (!input) return;
 
     if (!isDoiPattern(input)) {
-      setResolveError("Doesn't look like a valid DOI. Example: 10.1145/3290605.3300756");
+      setResolveError(t("invalidDoi"));
       return;
     }
 
@@ -99,7 +101,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
     setIsResolving(false);
 
     if (!result) {
-      setResolveError("DOI not found. You can still fill in the fields manually.");
+      setResolveError(t("doiNotFound"));
       return;
     }
 
@@ -146,7 +148,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          Add links
+          {t("addButton")}
         </button>
       </div>
     );
@@ -157,7 +159,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
       <div className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm">
         <textarea
           autoFocus
-          placeholder="Paste URLs or citations — one per line&#10;[Cushman 2006] Penni Cushman, _Title_, Journal, 2006: https://..."
+          placeholder={t("textareaPlaceholder")}
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
@@ -168,7 +170,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
             onClick={close}
             className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             onClick={handleAddLinks}
@@ -187,10 +189,10 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Scraping…
+                {t("scraping")}
               </span>
             ) : (
-              "Add links"
+              t("addLinks")
             )}
           </button>
         </div>
@@ -224,7 +226,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
               focus-visible:outline-none
             "
           >
-            {tab === "manual" ? "Single paper" : "Paste citations"}
+            {tab === "manual" ? t("tabSingle") : t("tabBatch")}
           </Tabs.Trigger>
         ))}
       </Tabs.List>
@@ -232,11 +234,9 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
       {/* Batch tab */}
       <Tabs.Content value="batch" className="px-5 pt-4 pb-2">
         <p className="text-xs text-sand-400 mb-3 leading-relaxed">
-          Paste citations in the format:
+          {t("batchFormat")}
           <br />
-          <span className="font-mono text-sand-500">
-            [Key] Authors, _Title_, Journal / Venue, Year: URL
-          </span>
+          <span className="font-mono text-sand-500">{t("batchFormatExample")}</span>
         </p>
         <textarea
           autoFocus
@@ -251,13 +251,13 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         {batchText.trim() && (
           <p className={`text-xs mt-1.5 ${parsedCount > 0 ? "text-coral-500" : "text-amber-500"}`}>
             {parsedCount > 0
-              ? `${parsedCount} citation${parsedCount !== 1 ? "s" : ""} detected`
-              : "No citations recognised — check the format"}
+              ? t("citationsDetected", { count: parsedCount })
+              : t("noCitationsRecognised")}
           </p>
         )}
         <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
           <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
-            Cancel
+            {t("cancel")}
           </button>
           <button
             onClick={handleAddBatch}
@@ -265,8 +265,8 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
             className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAdding
-              ? <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
-              : `Add ${parsedCount > 0 ? parsedCount : ""} paper${parsedCount !== 1 ? "s" : ""}`
+              ? <span className="flex items-center gap-2">{spinnerIcon} {t("saving")}</span>
+              : t("addPapers", { count: parsedCount })
             }
           </button>
         </div>
@@ -278,7 +278,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
           <input
             autoFocus
             type="text"
-            placeholder="DOI — e.g. 10.1145/3290605.3300756"
+            placeholder={t("doiPlaceholder")}
             value={doi}
             onChange={(e) => { setDoi(e.target.value); setResolveError(""); }}
             onKeyDown={(e) => { if (e.key === "Enter") handleLookupDoi(); }}
@@ -289,7 +289,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
             disabled={isResolving || !doi.trim()}
             className="text-sm font-medium px-4 py-2 rounded-lg border border-sand-200 text-sand-600 hover:border-coral-300 hover:text-coral-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
           >
-            {isResolving ? spinnerIcon : "Look up"}
+            {isResolving ? spinnerIcon : t("lookUp")}
           </button>
         </div>
 
@@ -297,7 +297,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
         <input
           type="text"
-          placeholder="Title *"
+          placeholder={t("titleField")}
           value={paperTitle}
           onChange={(e) => setPaperTitle(e.target.value)}
           className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
@@ -305,14 +305,14 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         <div className="flex gap-2 mb-2.5">
           <input
             type="text"
-            placeholder="Authors"
+            placeholder={t("authorsField")}
             value={authors}
             onChange={(e) => setAuthors(e.target.value)}
             className="flex-1 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
           />
           <input
             type="number"
-            placeholder="Year"
+            placeholder={t("yearField")}
             value={year}
             onChange={(e) => setYear(e.target.value)}
             className="w-24 text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 focus:outline-none focus:border-coral-300"
@@ -320,13 +320,13 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         </div>
         <input
           type="text"
-          placeholder="Journal / Conference"
+          placeholder={t("venueField")}
           value={venue}
           onChange={(e) => setVenue(e.target.value)}
           className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 mb-2.5 focus:outline-none focus:border-coral-300"
         />
         <textarea
-          placeholder="Notes (optional)"
+          placeholder={t("notesField")}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
@@ -335,7 +335,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         <div className="relative">
           <input
             type="url"
-            placeholder="PDF URL (auto-filled if openly available)"
+            placeholder={t("pdfUrlField")}
             value={pdfUrl}
             onChange={(e) => setPdfUrl(e.target.value)}
             className="w-full text-sm text-sand-800 placeholder:text-sand-300 border border-sand-200 rounded-lg px-3 py-2 pr-20 focus:outline-none focus:border-coral-300"
@@ -349,7 +349,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
         <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
           <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
-            Cancel
+            {t("cancel")}
           </button>
           <button
             onClick={handleAddPaper}
@@ -357,8 +357,8 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
             className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAdding
-              ? <span className="flex items-center gap-2">{spinnerIcon} Saving…</span>
-              : "Add paper"
+              ? <span className="flex items-center gap-2">{spinnerIcon} {t("saving")}</span>
+              : t("addPaper")
             }
           </button>
         </div>

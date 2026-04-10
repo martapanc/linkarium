@@ -23,6 +23,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
+import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
 import { LinkCard } from "./LinkCard";
 import { AddLinksForm } from "./AddLinksForm";
@@ -31,6 +32,7 @@ import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
 import { WriteGuard } from "./WriteGuard";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -57,6 +59,7 @@ interface Props {
 
 export function ListView({ list, initialLinks }: Props) {
   const router = useRouter();
+  const t = useTranslations("listView");
   const { token, authFetch } = useWriteToken();
   const [links, setLinks] = useState<DbLink[]>(initialLinks);
   const [search, setSearch] = useState("");
@@ -337,6 +340,7 @@ export function ListView({ list, initialLinks }: Props) {
             Linkarium
           </a>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <WriteGuard />
             <ShareButton listId={list.id} />
           </div>
@@ -377,9 +381,7 @@ export function ListView({ list, initialLinks }: Props) {
             <EmptyState />
           ) : filteredLinks.length === 0 ? (
             <div className="mt-12 text-center">
-              <p className="text-sand-400 text-sm">
-                No links match your search.
-              </p>
+              <p className="text-sand-400 text-sm">{t("noMatch")}</p>
               <button
                 onClick={() => {
                   setSearch("");
@@ -387,7 +389,7 @@ export function ListView({ list, initialLinks }: Props) {
                 }}
                 className="mt-2 text-coral-500 text-sm hover:underline cursor-pointer"
               >
-                Clear filters
+                {t("clearFilters")}
               </button>
             </div>
           ) : (
@@ -441,7 +443,7 @@ export function ListView({ list, initialLinks }: Props) {
           href="/"
           className="text-xs text-sand-400 hover:text-coral-500 transition-colors"
         >
-          Create your own list with Linkarium
+          {t("footer")}
         </a>
       </footer>
     </div>

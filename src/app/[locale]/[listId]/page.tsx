@@ -5,7 +5,7 @@ import type { DbList, DbLink } from "@/lib/types";
 import { ListView } from "@/components/ListView";
 
 interface PageProps {
-  params: Promise<{ listId: string }>;
+  params: Promise<{ locale: string; listId: string }>;
 }
 
 export async function generateMetadata({

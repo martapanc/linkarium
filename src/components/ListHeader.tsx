@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import type { DbList } from "@/lib/types";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
+  const t = useTranslations("listHeader");
   const [title, setTitle] = useState(list.title);
   const [description, setDescription] = useState(list.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -124,17 +126,17 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
         <p
           onClick={() => canWrite && setIsEditingDesc(true)}
           className={`mt-2 text-[15px] leading-relaxed ${canWrite ? "text-sand-400 cursor-text hover:text-sand-500 transition-colors" : "text-sand-400"}`}
-          title={canWrite ? "Click to edit" : undefined}
+          title={canWrite ? t("descriptionPlaceholder") : undefined}
         >
-          {description || (canWrite ? "Click to add a description…" : "")}
+          {description || (canWrite ? t("descriptionPlaceholder") : "")}
         </p>
       )}
 
       {/* Meta + delete */}
       <div className="mt-3 flex items-center gap-4">
         <p className="text-xs text-sand-400">
-          {linkCount} link{linkCount !== 1 ? "s" : ""} · created{" "}
-          {new Date(list.created_at).toLocaleDateString("en-GB", {
+          {t("linkCount", { count: linkCount })} · {t("created")}{" "}
+          {new Date(list.created_at).toLocaleDateString(undefined, {
             day: "numeric",
             month: "short",
             year: "numeric",
@@ -144,7 +146,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
         {canWrite && <AlertDialog.Root>
           <AlertDialog.Trigger asChild>
             <button className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer">
-              Delete list
+              {t("deleteList")}
             </button>
           </AlertDialog.Trigger>
 
@@ -156,16 +158,19 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
               animate-in fade-in-0 zoom-in-95
             ">
               <AlertDialog.Title className="text-lg font-semibold text-sand-900">
-                Delete this list?
+                {t("deleteTitle")}
               </AlertDialog.Title>
               <AlertDialog.Description className="mt-2 text-sm text-sand-500">
-                This will permanently delete <span className="font-medium text-sand-700">"{title}"</span> and all its links. This action cannot be undone.
+                {t.rich("deleteDescription", {
+                  title,
+                  strong: (chunks) => <span className="font-medium text-sand-700">{chunks}</span>,
+                })}
               </AlertDialog.Description>
 
               <div className="mt-6 flex justify-end gap-3">
                 <AlertDialog.Cancel asChild>
                   <button className="px-4 py-2 text-sm font-medium text-sand-600 bg-sand-100 hover:bg-sand-200 rounded-lg transition-colors cursor-pointer">
-                    Cancel
+                    {t("cancel")}
                   </button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action asChild>
@@ -174,7 +179,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
                     disabled={isDeleting}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
                   >
-                    {isDeleting ? "Deleting…" : "Yes, delete"}
+                    {isDeleting ? t("deleting") : t("confirmDelete")}
                   </button>
                 </AlertDialog.Action>
               </div>

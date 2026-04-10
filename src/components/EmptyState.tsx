@@ -1,6 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export function EmptyState() {
+  const t = useTranslations("emptyState");
+
   return (
     <div className="mt-16 flex flex-col items-center text-center">
       <div className="w-16 h-16 rounded-2xl bg-sand-100 flex items-center justify-center mb-5">
@@ -18,12 +22,8 @@ export function EmptyState() {
           />
         </svg>
       </div>
-      <h2 className="font-display text-2xl text-sand-700 mb-2">No links yet</h2>
-      <p className="text-sm text-sand-400 max-w-xs">
-        Click <span className="font-medium text-sand-500">"Add links"</span>{" "}
-        above to start building your list. Paste individual URLs or a whole
-        block of text — we&apos;ll find and scrape the links for you.
-      </p>
+      <h2 className="font-display text-2xl text-sand-700 mb-2">{t("title")}</h2>
+      <p className="text-sm text-sand-400 max-w-xs">{t("description")}</p>
     </div>
   );
 }
