@@ -5,7 +5,7 @@
   "home": {
     "headline1": "Drop your links.",
     "headline2": "Share the list.",
-    "tagline": "Paste URLs, get a clean shareable page.<br/>No signup needed.",
+    "tagline": "Paste URLs, get a clean shareable page. No signup needed.",
     "titlePlaceholder": "List title (optional)",
     "textareaPlaceholder": "Paste your links here — one per line, or just a block of text with URLs mixed in...\n\nhttps://example.com\nhttps://github.com/cool-project\nhttps://dev.to/interesting-article",
     "linksDetected": "~{count} link(s) detected",

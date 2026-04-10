@@ -5,7 +5,7 @@
   "home": {
     "headline1": "Aggiungi i tuoi link.",
     "headline2": "Condividi la lista.",
-    "tagline": "Incolla gli URL, ottieni una pagina condivisibile.<br/>Nessuna registrazione richiesta.",
+    "tagline": "Incolla gli URL, condividi la pagina. Nessuna registrazione richiesta.",
     "titlePlaceholder": "Titolo della lista (opzionale)",
     "textareaPlaceholder": "Incolla i link qui — uno per riga o un blocco di testo con URL...\n\nhttps://esempio.it\nhttps://github.com/progetto\nhttps://dev.to/articolo",
     "linksDetected": "~{count} link rilevati",
@@ -15,7 +15,7 @@
     "unlockHint": "Inserisci la passphrase per creare una lista.",
     "howItWorks": {
       "step1Title": "Incolla link o citazioni",
-      "step1Desc": "Aggiungi URL o citazioni accademiche nel formato [Autore Anno] — gestiamo entrambi.",
+      "step1Desc": "Aggiungi URL o citazioni accademiche nel formato [Autore Anno].",
       "step2Title": "Ottieni anteprime",
       "step2Desc": "Gli URL vengono analizzati per titolo e immagine. Le citazioni mostrano autori, anno e rivista.",
       "step3Title": "Condividi la pagina",

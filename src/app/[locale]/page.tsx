@@ -83,7 +83,7 @@ export default function Home() {
             <br />
             <span className="text-coral-500 italic">{t("headline2")}</span>
           </h1>
-          <p className="text-lg text-sand-500 max-w-md mx-auto text-pretty">
+          <p className="text-lg text-sand-500 max-w-82 mx-auto">
             {t.rich("tagline", { br: () => <br /> })}
           </p>
         </div>
