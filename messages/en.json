@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "github": "GitHub"
+  },
+  "home": {
+    "headline1": "Drop your links.",
+    "headline2": "Share the list.",
+    "tagline": "Paste URLs, get a clean shareable page. No signup needed.",
+    "titlePlaceholder": "List title (optional)",
+    "textareaPlaceholder": "Paste your links here — one per line, or just a block of text with URLs mixed in...\n\nhttps://example.com\nhttps://github.com/cool-project\nhttps://dev.to/interesting-article",
+    "linksDetected": "~{count} link(s) detected",
+    "addLater": "You can also add links later",
+    "createButton": "Create list",
+    "creatingButton": "Creating…",
+    "unlockHint": "Unlock with the passphrase to create a list.",
+    "howItWorks": {
+      "step1Title": "Paste links or papers",
+      "step1Desc": "Drop in URLs, or paste academic citations in [Author Year] format — we handle both.",
+      "step2Title": "Get previews",
+      "step2Desc": "URLs are scraped for title and image. Paper references show authors, year, and venue.",
+      "step3Title": "Share the page",
+      "step3Desc": "Copy your list's short URL and send it to anyone. They'll see a clean, searchable page."
+    },
+    "footer": "Linkarium — open source link list sharing"
+  },
+  "listView": {
+    "noMatch": "No links match your search.",
+    "clearFilters": "Clear filters",
+    "footer": "Create your own list with Linkarium",
+    "footerReadOnly": "Linkarium — open source link list sharing"
+  },
+  "listHeader": {
+    "descriptionPlaceholder": "Click to add a description…",
+    "linkCount": "{count, plural, =1 {1 link} other {# links}}",
+    "created": "created",
+    "deleteList": "Delete list",
+    "deleteTitle": "Delete this list?",
+    "deleteDescription": "This will permanently delete \"{title}\" and all its links. This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirmDelete": "Yes, delete",
+    "deleting": "Deleting…"
+  },
+  "addLinks": {
+    "addButton": "Add links",
+    "cancel": "Cancel",
+    "scraping": "Scraping…",
+    "saving": "Saving…",
+    "tabSingle": "Single paper",
+    "tabBatch": "Paste citations",
+    "textareaPlaceholder": "Paste URLs or citations — one per line\n[Cushman 2006] Penni Cushman, _Title_, Journal, 2006: https://...",
+    "addLinks": "Add links",
+    "batchFormat": "Paste citations in the format:",
+    "batchFormatExample": "[Key] Authors, _Title_, Journal / Venue, Year: URL",
+    "citationsDetected": "{count, plural, =1 {1 citation detected} other {# citations detected}}",
+    "noCitationsRecognised": "No citations recognised — check the format",
+    "addPapers": "Add {count, plural, =1 {1 paper} other {# papers}}",
+    "doiPlaceholder": "DOI — e.g. 10.1145/3290605.3300756",
+    "lookUp": "Look up",
+    "invalidDoi": "Doesn't look like a valid DOI. Example: 10.1145/3290605.3300756",
+    "doiNotFound": "DOI not found. You can still fill in the fields manually.",
+    "titleField": "Title *",
+    "authorsField": "Authors",
+    "yearField": "Year",
+    "venueField": "Journal / Conference",
+    "notesField": "Notes (optional)",
+    "pdfUrlField": "PDF URL (auto-filled if openly available)",
+    "addPaper": "Add paper"
+  },
+  "searchFilter": {
+    "searchPlaceholder": "Search links…",
+    "allDomains": "All domains",
+    "sortManual": "Manual order",
+    "sortDate": "Date added",
+    "sortTitle": "Title",
+    "sortDomain": "Domain",
+    "resultCount": "{filtered} of {total}"
+  },
+  "linkCard": {
+    "noPublicLink": "no public link",
+    "copyUrl": "Copy URL",
+    "refreshMetadata": "Refresh metadata",
+    "remove": "Remove",
+    "dragToReorder": "Drag to reorder"
+  },
+  "emptyState": {
+    "title": "No links yet",
+    "description": "Click \"Add links\" above to start building your list. Paste individual URLs or a whole block of text — we'll find and scrape the links for you."
+  },
+  "shareButton": {
+    "share": "Share",
+    "copied": "Copied!"
+  },
+  "writeGuard": {
+    "unlockTitle": "Enter passphrase to edit",
+    "lockTitle": "Click to lock",
+    "enterPassphrase": "Enter passphrase",
+    "wrongPassphrase": "Wrong passphrase.",
+    "unlock": "Unlock",
+    "checking": "Checking…"
+  },
+  "languageSwitcher": {
+    "label": "Language"
+  }
+}

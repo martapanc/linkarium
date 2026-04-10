@@ -23,6 +23,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
+import type { FeatureFlags } from "@/lib/feature-flags";
+import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
 import { LinkCard } from "./LinkCard";
 import { AddLinksForm } from "./AddLinksForm";
@@ -31,6 +33,7 @@ import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
 import { WriteGuard } from "./WriteGuard";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -39,6 +42,7 @@ function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   return (
     <div
       ref={setNodeRef}
+      className="min-w-0"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
@@ -53,10 +57,13 @@ function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
 interface Props {
   list: DbList;
   initialLinks: DbLink[];
+  flags: FeatureFlags;
 }
 
-export function ListView({ list, initialLinks }: Props) {
+export function ListView({ list, initialLinks, flags }: Props) {
   const router = useRouter();
+  const t = useTranslations("listView");
+  const t2 = useTranslations("home");
   const { token, authFetch } = useWriteToken();
   const [links, setLinks] = useState<DbLink[]>(initialLinks);
   const [search, setSearch] = useState("");
@@ -329,7 +336,7 @@ export function ListView({ list, initialLinks }: Props) {
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
       <nav className="border-b border-sand-200 px-4 sm:px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
           <a
             href="/"
             className="font-display text-xl text-sand-900 tracking-tight hover:text-coral-500 transition-colors"
@@ -337,27 +344,28 @@ export function ListView({ list, initialLinks }: Props) {
             Linkarium
           </a>
           <div className="flex items-center gap-3">
-            <WriteGuard />
+            {flags.showLanguageSwitcher && <LanguageSwitcher />}
+            {flags.showWriteGuard && <WriteGuard />}
             <ShareButton listId={list.id} />
           </div>
         </div>
       </nav>
 
       <main className="flex-1 px-4 sm:px-6 py-8 md:py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* List header (editable title + description) */}
           <ListHeader list={list} linkCount={links.length} onDelete={handleDeleteList} canWrite={canWrite} />
 
           {/* Add links — only shown when unlocked */}
           {canWrite && (
-            <div className="mt-8">
+            <div className="mt-4 sm:mt-8">
               <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} isAdding={isAdding} />
             </div>
           )}
 
           {/* Search / filter / sort bar */}
           {links.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-4 sm:mt-8">
               <SearchFilterBar
                 search={search}
                 onSearchChange={setSearch}
@@ -377,9 +385,7 @@ export function ListView({ list, initialLinks }: Props) {
             <EmptyState />
           ) : filteredLinks.length === 0 ? (
             <div className="mt-12 text-center">
-              <p className="text-sand-400 text-sm">
-                No links match your search.
-              </p>
+              <p className="text-sand-400 text-sm">{t("noMatch")}</p>
               <button
                 onClick={() => {
                   setSearch("");
@@ -387,11 +393,11 @@ export function ListView({ list, initialLinks }: Props) {
                 }}
                 className="mt-2 text-coral-500 text-sm hover:underline cursor-pointer"
               >
-                Clear filters
+                {t("clearFilters")}
               </button>
             </div>
           ) : (
-            <div className="mt-6 grid gap-3">
+            <div className="mt-4 sm:mt-6 grid gap-1.5 sm:gap-3">
               {canWrite && sort.field === "position" ? (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                   <SortableContext items={filteredLinks.map((l) => l.id)} strategy={verticalListSortingStrategy}>
@@ -436,13 +442,14 @@ export function ListView({ list, initialLinks }: Props) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-sand-200 px-6 py-6 text-center">
-        <a
-          href="/"
-          className="text-xs text-sand-400 hover:text-coral-500 transition-colors"
-        >
-          Create your own list with Linkarium
-        </a>
+      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-400">
+        {canWrite ? (
+          <a href="/" className="hover:text-coral-500 transition-colors">
+            {t("footer")}
+          </a>
+        ) : (
+          t("footerReadOnly")
+        )}
       </footer>
     </div>
   );

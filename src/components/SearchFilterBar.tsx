@@ -1,6 +1,7 @@
 "use client";
 
 import * as Select from "@radix-ui/react-select";
+import { useTranslations } from "next-intl";
 import type { SortConfig, SortField } from "@/lib/types";
 
 interface Props {
@@ -14,13 +15,6 @@ interface Props {
   totalCount: number;
   filteredCount: number;
 }
-
-const SORT_OPTIONS: { field: SortField; label: string }[] = [
-  { field: "position", label: "Manual order" },
-  { field: "created_at", label: "Date added" },
-  { field: "title", label: "Title" },
-  { field: "domain", label: "Domain" },
-];
 
 const ChevronDownIcon = () => (
   <svg className="w-3.5 h-3.5 text-sand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -45,6 +39,15 @@ export function SearchFilterBar({
   totalCount,
   filteredCount,
 }: Props) {
+  const t = useTranslations("searchFilter");
+
+  const SORT_OPTIONS: { field: SortField; label: string }[] = [
+    { field: "position", label: t("sortManual") },
+    { field: "created_at", label: t("sortDate") },
+    { field: "title", label: t("sortTitle") },
+    { field: "domain", label: t("sortDomain") },
+  ];
+
   const isFiltered = search.trim() || domainFilter;
 
   return (
@@ -66,12 +69,12 @@ export function SearchFilterBar({
         </svg>
         <input
           type="text"
-          placeholder="Search links…"
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="
             w-full pl-10 pr-4 py-2.5
-            bg-white border border-sand-200 rounded-xl
+            bg-white border border-sand-200 rounded-lg
             text-sm text-sand-800 placeholder:text-sand-300
             focus:outline-none focus:border-sand-300
             transition-colors
@@ -91,81 +94,52 @@ export function SearchFilterBar({
 
       {/* Filter row */}
       <div className="flex flex-wrap items-center gap-2">
-
-
         {/* Domain filter */}
         {domains.length > 1 && (
           <Select.Root
-                  value={domainFilter ?? "__all__"}
-                  onValueChange={(v) => onDomainFilterChange(v === "__all__" ? null : v)}
-              >
-                <Select.Trigger
-                    className="
-                inline-flex items-center gap-1.5 min-w-32
-                text-xs px-3 py-1.5
-                bg-white border border-sand-200 rounded-lg
-                text-sand-600 hover:border-sand-300
-                focus:outline-none
-                cursor-pointer transition-colors
-                data-[state=open]:border-coral-300 data-[state=open]:text-coral-600
-              "
-                >
-                  <Select.Value>{domainFilter ?? "All domains"}</Select.Value>
-                  <Select.Icon>
-                    <ChevronDownIcon />
-                  </Select.Icon>
-                </Select.Trigger>
+            value={domainFilter ?? "__all__"}
+            onValueChange={(v) => onDomainFilterChange(v === "__all__" ? null : v)}
+          >
+            <Select.Trigger className="
+              inline-flex items-center gap-1.5 min-w-32
+              text-xs px-3 py-1.5
+              bg-white border border-sand-200 rounded-lg
+              text-sand-600 hover:border-sand-300
+              focus:outline-none cursor-pointer transition-colors
+              data-[state=open]:border-coral-300 data-[state=open]:text-coral-600
+            ">
+              <Select.Value>{domainFilter ?? t("allDomains")}</Select.Value>
+              <Select.Icon><ChevronDownIcon /></Select.Icon>
+            </Select.Trigger>
 
-                <Select.Portal>
-                  <Select.Content
-                      position="popper"
-                      sideOffset={4}
-                      className="
-                  z-50 min-w-40 max-h-60
-                  bg-white rounded-lg border border-sand-200 shadow-lg
-                  overflow-hidden
-                  animate-in fade-in-0 zoom-in-95
-                "
-                  >
-                    <Select.Viewport className="p-1">
-                      <Select.Item
-                          value="__all__"
-                          className="
-                      flex items-center justify-between
-                      px-3 py-2 text-xs text-sand-500
-                      rounded-md cursor-pointer outline-none
-                      hover:bg-sand-50 data-highlighted:bg-sand-50
-                    "
-                      >
-                        <Select.ItemText>All domains</Select.ItemText>
-                        <Select.ItemIndicator>
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-
-                      <Select.Separator className="border-t border-sand-100 my-1" />
-
-                      {domains.map((d) => (
-                          <Select.Item
-                              key={d}
-                              value={d}
-                              className="
-                        flex items-center justify-between
-                        px-3 py-2 text-xs text-sand-700
-                        rounded-md cursor-pointer outline-none
-                        hover:bg-sand-50 data-highlighted:bg-sand-50
-                      "
-                          >
-                            <Select.ItemText>{d}</Select.ItemText>
-                            <Select.ItemIndicator>
-                              <CheckIcon />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
+            <Select.Portal>
+              <Select.Content position="popper" sideOffset={4} className="
+                z-50 min-w-40 max-h-60
+                bg-white rounded-lg border border-sand-200 shadow-lg
+                overflow-hidden animate-in fade-in-0 zoom-in-95
+              ">
+                <Select.Viewport className="p-1">
+                  <Select.Item value="__all__" className="
+                    flex items-center justify-between px-3 py-2 text-xs text-sand-500
+                    rounded-md cursor-pointer outline-none hover:bg-sand-50 data-highlighted:bg-sand-50
+                  ">
+                    <Select.ItemText>{t("allDomains")}</Select.ItemText>
+                    <Select.ItemIndicator><CheckIcon /></Select.ItemIndicator>
+                  </Select.Item>
+                  <Select.Separator className="border-t border-sand-100 my-1" />
+                  {domains.map((d) => (
+                    <Select.Item key={d} value={d} className="
+                      flex items-center justify-between px-3 py-2 text-xs text-sand-700
+                      rounded-md cursor-pointer outline-none hover:bg-sand-50 data-highlighted:bg-sand-50
+                    ">
+                      <Select.ItemText>{d}</Select.ItemText>
+                      <Select.ItemIndicator><CheckIcon /></Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
         )}
 
         {/* Sort */}
@@ -176,18 +150,14 @@ export function SearchFilterBar({
               onClick={() => onSortChange(opt.field)}
               className={`
                 text-xs px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer
-                ${
-                  sort.field === opt.field
-                    ? "bg-sand-900 text-white"
-                    : "bg-sand-100 text-sand-500 hover:bg-sand-200"
-                }
+                ${sort.field === opt.field
+                  ? "bg-sand-900 text-white"
+                  : "bg-sand-100 text-sand-500 hover:bg-sand-200"}
               `}
             >
               {opt.label}
               {sort.field === opt.field && (
-                <span className="ml-1">
-                  {sort.direction === "asc" ? "↑" : "↓"}
-                </span>
+                <span className="ml-1">{sort.direction === "asc" ? "↑" : "↓"}</span>
               )}
             </button>
           ))}
@@ -196,7 +166,7 @@ export function SearchFilterBar({
         {/* Result count */}
         {isFiltered && (
           <span className="text-xs text-sand-400 ml-auto">
-            {filteredCount} of {totalCount}
+            {t("resultCount", { filtered: filteredCount, total: totalCount })}
           </span>
         )}
       </div>

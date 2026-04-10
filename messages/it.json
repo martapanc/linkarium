@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "github": "GitHub"
+  },
+  "home": {
+    "headline1": "Aggiungi i tuoi link.",
+    "headline2": "Condividi la lista.",
+    "tagline": "Incolla gli URL, condividi la pagina. Nessuna registrazione richiesta.",
+    "titlePlaceholder": "Titolo della lista (opzionale)",
+    "textareaPlaceholder": "Incolla i link qui — uno per riga o un blocco di testo con URL...\n\nhttps://esempio.it\nhttps://github.com/progetto\nhttps://dev.to/articolo",
+    "linksDetected": "~{count} link rilevati",
+    "addLater": "Puoi aggiungere link anche in seguito",
+    "createButton": "Crea lista",
+    "creatingButton": "Creazione…",
+    "unlockHint": "Inserisci la passphrase per creare una lista.",
+    "howItWorks": {
+      "step1Title": "Incolla link o citazioni",
+      "step1Desc": "Aggiungi URL o citazioni accademiche nel formato [Autore Anno].",
+      "step2Title": "Ottieni anteprime",
+      "step2Desc": "Gli URL vengono analizzati per titolo e immagine. Le citazioni mostrano autori, anno e rivista.",
+      "step3Title": "Condividi la pagina",
+      "step3Desc": "Copia l'URL breve della lista e invialo a chiunque. Vedranno una pagina pulita e ricercabile."
+    },
+    "footer": "Linkarium — condivisione di liste di link open source"
+  },
+  "listView": {
+    "noMatch": "Nessun link corrisponde alla ricerca.",
+    "clearFilters": "Rimuovi filtri",
+    "footer": "Crea la tua lista con Linkarium",
+    "footerReadOnly": "Linkarium — condivisione di liste di link open source"
+  },
+  "listHeader": {
+    "descriptionPlaceholder": "Clicca per aggiungere una descrizione…",
+    "linkCount": "{count, plural, =1 {1 link} other {# link}}",
+    "created": "creata il",
+    "deleteList": "Elimina lista",
+    "deleteTitle": "Eliminare questa lista?",
+    "deleteDescription": "Questa azione eliminerà definitivamente \"{title}\" e tutti i suoi link. Non è reversibile.",
+    "cancel": "Annulla",
+    "confirmDelete": "Sì, elimina",
+    "deleting": "Eliminazione…"
+  },
+  "addLinks": {
+    "addButton": "Aggiungi link",
+    "cancel": "Annulla",
+    "scraping": "Scansione…",
+    "saving": "Salvataggio…",
+    "tabSingle": "Articolo singolo",
+    "tabBatch": "Incolla citazioni",
+    "textareaPlaceholder": "Incolla URL o citazioni — uno per riga\n[Cushman 2006] Penni Cushman, _Titolo_, Rivista, 2006: https://...",
+    "addLinks": "Aggiungi link",
+    "batchFormat": "Incolla le citazioni nel formato:",
+    "batchFormatExample": "[Chiave] Autori, _Titolo_, Rivista / Convegno, Anno: URL",
+    "citationsDetected": "{count, plural, =1 {1 citazione rilevata} other {# citazioni rilevate}}",
+    "noCitationsRecognised": "Nessuna citazione riconosciuta — controlla il formato",
+    "addPapers": "Aggiungi {count, plural, =1 {1 articolo} other {# articoli}}",
+    "doiPlaceholder": "DOI — es. 10.1145/3290605.3300756",
+    "lookUp": "Cerca",
+    "invalidDoi": "Non sembra un DOI valido. Esempio: 10.1145/3290605.3300756",
+    "doiNotFound": "DOI non trovato. Puoi comunque compilare i campi manualmente.",
+    "titleField": "Titolo *",
+    "authorsField": "Autori",
+    "yearField": "Anno",
+    "venueField": "Rivista / Convegno",
+    "notesField": "Note (opzionale)",
+    "pdfUrlField": "URL PDF (compilato automaticamente se disponibile)",
+    "addPaper": "Aggiungi articolo"
+  },
+  "searchFilter": {
+    "searchPlaceholder": "Cerca link…",
+    "allDomains": "Tutti i domini",
+    "sortManual": "Ordine manuale",
+    "sortDate": "Data aggiunta",
+    "sortTitle": "Titolo",
+    "sortDomain": "Dominio",
+    "resultCount": "{filtered} di {total}"
+  },
+  "linkCard": {
+    "noPublicLink": "nessun link pubblico",
+    "copyUrl": "Copia URL",
+    "refreshMetadata": "Aggiorna metadati",
+    "remove": "Rimuovi",
+    "dragToReorder": "Trascina per riordinare"
+  },
+  "emptyState": {
+    "title": "Nessun link ancora",
+    "description": "Clicca su \"Aggiungi link\" per iniziare a costruire la tua lista. Incolla URL singoli o un blocco di testo — troveremo e analizzeremo i link per te."
+  },
+  "shareButton": {
+    "share": "Condividi",
+    "copied": "Copiato!"
+  },
+  "writeGuard": {
+    "unlockTitle": "Inserisci la passphrase per modificare",
+    "lockTitle": "Clicca per bloccare",
+    "enterPassphrase": "Inserisci la passphrase",
+    "wrongPassphrase": "Passphrase errata.",
+    "unlock": "Sblocca",
+    "checking": "Verifica…"
+  },
+  "languageSwitcher": {
+    "label": "Lingua"
+  }
+}

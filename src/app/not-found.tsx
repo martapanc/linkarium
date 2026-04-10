@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <a
         href="/"
-        className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+        className="bg-coral-500 hover:bg-coral-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
       >
         Create a new list
       </a>
