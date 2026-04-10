@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/martapanc/linkarium/compare/v1.2.0...v1.3.0) (2026-04-10)
+
+
+### Features
+
+* **linkCard:** add copy title action to dropdown menu ([8fe2a74](https://github.com/martapanc/linkarium/commit/8fe2a74e8e428a70403c7a5fb84be7df50053803))
+
+
+### Bug Fixes
+
+* prevent author initials from being parsed as URLs ([cf454da](https://github.com/martapanc/linkarium/commit/cf454da028a60ffad86e33c050ef0081533ea3fc))
+
 ## [1.2.0](https://github.com/martapanc/linkarium/compare/v1.1.0...v1.2.0) (2026-04-10)
 
 
