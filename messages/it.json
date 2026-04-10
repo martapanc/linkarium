@@ -9,6 +9,7 @@
     "titlePlaceholder": "Titolo della lista (opzionale)",
     "textareaPlaceholder": "Incolla i link qui — uno per riga o un blocco di testo con URL...\n\nhttps://esempio.it\nhttps://github.com/progetto\nhttps://dev.to/articolo",
     "linksDetected": "~{count} link rilevati",
+    "citationsDetected": "{count} citazione/i rilevate",
     "addLater": "Puoi aggiungere link anche in seguito",
     "createButton": "Crea lista",
     "creatingButton": "Creazione…",
@@ -78,6 +79,7 @@
   "linkCard": {
     "noPublicLink": "nessun link pubblico",
     "copyUrl": "Copia URL",
+    "copyTitle": "Copia titolo",
     "refreshMetadata": "Aggiorna metadati",
     "remove": "Rimuovi",
     "dragToReorder": "Trascina per riordinare"

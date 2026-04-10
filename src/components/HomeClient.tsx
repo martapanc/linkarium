@@ -8,6 +8,7 @@ import { useWriteToken } from "@/lib/useWriteToken";
 import { WriteGuard } from "@/components/WriteGuard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { FeatureFlags } from "@/lib/feature-flags";
+import { looksLikeCitations, parseCitations } from "@/lib/citation-parser";
 
 interface Props {
   flags: FeatureFlags;
@@ -27,23 +28,33 @@ export function HomeClient({ flags }: Props) {
   async function handleCreate() {
     setIsCreating(true);
     try {
-      const urls = rawText
-        .split(/[\n\r]+/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
+      // Create the list (no initial links — we add them below)
       const res = await authFetch("/api/lists", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: title || "My Links",
-          urls: urls.length > 0 ? urls : undefined,
-        }),
+        body: JSON.stringify({ title: title || "My Links" }),
       });
 
       if (!res.ok) throw new Error("Failed to create list");
 
       const { list } = await res.json();
+
+      // Add links/papers if text was provided
+      if (rawText.trim()) {
+        const isCitations = looksLikeCitations(rawText);
+        const papers = isCitations ? parseCitations(rawText) : [];
+
+        await authFetch("/api/links", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            papers.length > 0
+              ? { listId: list.id, papers }
+              : { listId: list.id, rawText }
+          ),
+        });
+      }
+
       router.push(`/${list.id}`);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -125,7 +136,9 @@ export function HomeClient({ flags }: Props) {
             <div className="border-t border-sand-100 px-5 py-4 flex items-center justify-between">
               <span className="text-xs text-sand-400">
                 {rawText.trim()
-                  ? t("linksDetected", { count: rawText.split(/https?:\/\//).length - 1 })
+                  ? looksLikeCitations(rawText)
+                    ? t("citationsDetected", { count: parseCitations(rawText).length })
+                    : t("linksDetected", { count: rawText.split(/https?:\/\//).length - 1 })
                   : t("addLater")}
               </span>
               <button

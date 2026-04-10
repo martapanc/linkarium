@@ -4,27 +4,19 @@
  *  - Newline-separated URLs
  *  - Space-separated URLs
  *  - URLs mixed with plain text
- *  - URLs with or without protocol
  *  - Deduplication
+ * Requires https?:// prefix to avoid false positives (e.g. author initials like M.A.)
  */
 
 const URL_REGEX =
-  /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi;
+  /https?:\/\/[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi;
 
 export function extractUrls(input: string): string[] {
   const matches = input.match(URL_REGEX);
   if (!matches) return [];
 
-  const normalised = matches.map((url) => {
-    // Add protocol if missing
-    if (!/^https?:\/\//i.test(url)) {
-      return `https://${url}`;
-    }
-    return url;
-  });
-
   // Deduplicate, preserving order
-  return [...new Set(normalised)];
+  return [...new Set(matches)];
 }
 
 export function extractDomain(url: string): string {

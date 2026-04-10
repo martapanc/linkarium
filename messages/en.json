@@ -9,6 +9,7 @@
     "titlePlaceholder": "List title (optional)",
     "textareaPlaceholder": "Paste your links here — one per line, or just a block of text with URLs mixed in...\n\nhttps://example.com\nhttps://github.com/cool-project\nhttps://dev.to/interesting-article",
     "linksDetected": "~{count} link(s) detected",
+    "citationsDetected": "{count} citation(s) detected",
     "addLater": "You can also add links later",
     "createButton": "Create list",
     "creatingButton": "Creating…",
@@ -78,6 +79,7 @@
   "linkCard": {
     "noPublicLink": "no public link",
     "copyUrl": "Copy URL",
+    "copyTitle": "Copy title",
     "refreshMetadata": "Refresh metadata",
     "remove": "Remove",
     "dragToReorder": "Drag to reorder"
