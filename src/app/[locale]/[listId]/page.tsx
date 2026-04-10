@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { DbList, DbLink } from "@/lib/types";
 import { ListView } from "@/components/ListView";
+import { getFeatureFlags } from "@/lib/feature-flags";
 
 interface PageProps {
   params: Promise<{ locale: string; listId: string }>;
@@ -49,6 +50,7 @@ export async function generateMetadata({
 export default async function ListPage({ params }: PageProps) {
   const { listId } = await params;
   const supabase = await createServerSupabase();
+  const flags = getFeatureFlags();
 
   const { data: list } = await supabase
     .from("lists")
@@ -69,6 +71,7 @@ export default async function ListPage({ params }: PageProps) {
     <ListView
       list={list as DbList}
       initialLinks={(links as DbLink[]) || []}
+      flags={flags}
     />
   );
 }

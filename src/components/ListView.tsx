@@ -23,6 +23,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
+import type { FeatureFlags } from "@/lib/feature-flags";
 import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
 import { LinkCard } from "./LinkCard";
@@ -56,9 +57,10 @@ function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
 interface Props {
   list: DbList;
   initialLinks: DbLink[];
+  flags: FeatureFlags;
 }
 
-export function ListView({ list, initialLinks }: Props) {
+export function ListView({ list, initialLinks, flags }: Props) {
   const router = useRouter();
   const t = useTranslations("listView");
   const t2 = useTranslations("home");
@@ -342,8 +344,8 @@ export function ListView({ list, initialLinks }: Props) {
             Linkarium
           </a>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
-            <WriteGuard />
+            {flags.showLanguageSwitcher && <LanguageSwitcher />}
+            {flags.showWriteGuard && <WriteGuard />}
             <ShareButton listId={list.id} />
           </div>
         </div>
