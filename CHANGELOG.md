@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/martapanc/linkarium/compare/v1.1.0...v1.2.0) (2026-04-10)
+
+
+### Features
+
+* add i18n support with English and Italian translations ([a44736a](https://github.com/martapanc/linkarium/commit/a44736ae54b6e08120bf8e43e98312ef75cf6c90))
+* add server-side feature flags to toggle WriteGuard and LanguageSwitcher ([e328594](https://github.com/martapanc/linkarium/commit/e328594244b3d9d1ee1f48441715d1c01199dbdb))
+* **listView:** show different footer based on edit mode ([d701a6b](https://github.com/martapanc/linkarium/commit/d701a6b09b49b2de4406140f264d2d24f86295a5))
+
+
+### Bug Fixes
+
+* **linkCard:** prevent URL overflow in edit mode and refine card layout ([4a9a3cb](https://github.com/martapanc/linkarium/commit/4a9a3cb09ce2d085ffa0920d31794c23e5e06ea8))
+
 ## [1.1.0](https://github.com/martapanc/linkarium/compare/v1.0.0...v1.1.0) (2026-04-10)
 
 
