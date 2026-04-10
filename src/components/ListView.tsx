@@ -60,6 +60,7 @@ interface Props {
 export function ListView({ list, initialLinks }: Props) {
   const router = useRouter();
   const t = useTranslations("listView");
+  const t2 = useTranslations("home");
   const { token, authFetch } = useWriteToken();
   const [links, setLinks] = useState<DbLink[]>(initialLinks);
   const [search, setSearch] = useState("");
@@ -438,13 +439,14 @@ export function ListView({ list, initialLinks }: Props) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-sand-200 px-6 py-6 text-center">
-        <a
-          href="/"
-          className="text-xs text-sand-400 hover:text-coral-500 transition-colors"
-        >
-          {t("footer")}
-        </a>
+      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-400">
+        {canWrite ? (
+          <a href="/" className="hover:text-coral-500 transition-colors">
+            {t("footer")}
+          </a>
+        ) : (
+          t("footerReadOnly")
+        )}
       </footer>
     </div>
   );

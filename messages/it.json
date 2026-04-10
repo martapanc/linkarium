@@ -26,7 +26,8 @@
   "listView": {
     "noMatch": "Nessun link corrisponde alla ricerca.",
     "clearFilters": "Rimuovi filtri",
-    "footer": "Crea la tua lista con Linkarium"
+    "footer": "Crea la tua lista con Linkarium",
+    "footerReadOnly": "Linkarium — condivisione di liste di link open source"
   },
   "listHeader": {
     "descriptionPlaceholder": "Clicca per aggiungere una descrizione…",
