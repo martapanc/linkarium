@@ -77,7 +77,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
             )}
           </div>
         ) : hasImage ? (
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-sand-100">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg overflow-hidden bg-sand-100">
             <img
               src={link.image_url!}
               alt=""
@@ -122,7 +122,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
           <>
             <p className="text-xs sm:text-sm font-medium text-sand-900 leading-snug line-clamp-1 sm:line-clamp-2">
               {link.citation_authors && <>{link.citation_authors}, </>}
-              {link.title && <em>{link.title}</em>}
+              {link.title && <em className="font-display">{link.title}</em>}
               {link.citation_venue && <>, {link.citation_venue}</>}
               {link.citation_year && <>, {link.citation_year}</>}
             </p>
@@ -157,15 +157,10 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
           </>
         ) : (
           <>
-            <h3 className="text-xs sm:text-sm font-medium text-sand-900 leading-snug line-clamp-2 break-all">
+            <h3 className="text-xs sm:text-sm font-medium text-sand-900 leading-snug line-clamp-1 sm:line-clamp-2 break-all">
               {link.title || link.url || "Untitled"}
             </h3>
-            {link.description && (
-              <p className="text-xs sm:text-sm text-sand-500 mt-0.5 line-clamp-2 leading-relaxed">
-                {link.description}
-              </p>
-            )}
-            <div className="flex items-center gap-2 mt-1.5 min-w-0">
+            <div className="flex items-center gap-2 mt-0.5 min-w-0">
               <span className="text-xs text-sand-400 truncate min-w-0">
                 {link.domain || link.url}
               </span>
@@ -251,6 +246,17 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
                 </svg>
                 {t("copyUrl")}
+              </DropdownMenu.Item>
+            )}
+            {link.title && (
+              <DropdownMenu.Item
+                onSelect={() => navigator.clipboard.writeText(link.title!)}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-sand-700 hover:bg-sand-50 cursor-pointer outline-none"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                </svg>
+                {t("copyTitle")}
               </DropdownMenu.Item>
             )}
             {!isPaper && (
