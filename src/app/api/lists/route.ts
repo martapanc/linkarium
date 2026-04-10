@@ -3,10 +3,14 @@ import { nanoid } from "nanoid";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrls } from "@/lib/scraper";
 import { extractUrls } from "@/lib/url-parser";
+import { requireWriteToken } from "@/lib/write-auth";
 import type { CreateListRequest } from "@/lib/types";
 
 // POST /api/lists — Create a new list, optionally with initial URLs
 export async function POST(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const body = (await request.json()) as CreateListRequest;
     const supabase = await createServerSupabase();
@@ -75,8 +79,43 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// DELETE /api/lists — Soft-delete a list
+export async function DELETE(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "List ID required" }, { status: 400 });
+    }
+
+    const supabase = await createServerSupabase();
+
+    const { error } = await supabase
+      .from("lists")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id)
+      .is("deleted_at", null);
+
+    if (error) {
+      return NextResponse.json({ error: "Failed to delete list" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[api/lists] DELETE error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
 // PATCH /api/lists — Update list title/description
 export async function PATCH(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { id, title, description } = await request.json();
     if (!id) {

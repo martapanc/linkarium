@@ -2,17 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { scrapeUrls } from "@/lib/scraper";
 import { extractUrls } from "@/lib/url-parser";
+import { requireWriteToken } from "@/lib/write-auth";
 
-// POST /api/links — Add links to an existing list
+// POST /api/links — Add links (URLs or paper references) to an existing list
 export async function POST(request: NextRequest) {
-  try {
-    const { listId, rawText } = await request.json();
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
 
-    if (!listId || !rawText) {
-      return NextResponse.json(
-        { error: "listId and rawText are required" },
-        { status: 400 },
-      );
+  try {
+    const body = await request.json();
+    const { listId } = body;
+
+    if (!listId) {
+      return NextResponse.json({ error: "listId is required" }, { status: 400 });
     }
 
     const supabase = await createServerSupabase();
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
     // Get current max position
     const { data: existing } = await supabase
       .from("links")
-      .select("position, url")
+      .select("position")
       .eq("list_id", listId)
       .order("position", { ascending: false })
       .limit(1);
@@ -40,15 +42,116 @@ export async function POST(request: NextRequest) {
       ? existing[0].position + 1
       : 0;
 
+    // ── Paper reference(s) path ───────────────────────────────────────────────
+    // Normalise: `paper` (single) → `papers` (array of one)
+    const paperList: Array<typeof body.paper> =
+      body.papers ?? (body.paper ? [body.paper] : null);
+
+    if (paperList) {
+      if (!paperList.length) {
+        return NextResponse.json({ links: [], duplicatesSkipped: 0 });
+      }
+
+      // Existing titles in this list (for dedup when there's no DOI)
+      const { data: existingPapers } = await supabase
+        .from("links")
+        .select("doi, title")
+        .eq("list_id", listId)
+        .eq("link_type", "paper");
+
+      const existingDois = new Set(
+        (existingPapers ?? []).map((p) => p.doi).filter(Boolean),
+      );
+      const existingTitles = new Set(
+        (existingPapers ?? []).map((p) => p.title?.toLowerCase()).filter(Boolean),
+      );
+
+      let duplicatesSkipped = 0;
+      const rows: Array<Record<string, unknown>> = [];
+
+      for (let i = 0; i < paperList.length; i++) {
+        const p = paperList[i];
+        if (!p?.title?.trim()) { duplicatesSkipped++; continue; }
+
+        const providedUrl = p.url?.trim() || null;
+
+        // Dedup: check title, then URL, then DOI extracted from doi.org URLs
+        if (existingTitles.has(p.title.trim().toLowerCase())) { duplicatesSkipped++; continue; }
+
+        // Extract DOI if the link is a doi.org URL
+        let doi: string | null = null;
+        if (providedUrl && /^https?:\/\/doi\.org\//i.test(providedUrl)) {
+          doi = providedUrl.replace(/^https?:\/\/doi\.org\//i, "");
+        }
+
+        if (doi && existingDois.has(doi)) { duplicatesSkipped++; continue; }
+
+        // Detect direct PDF link
+        const pdf_url = providedUrl && /\.pdf(\?.*)?$/i.test(providedUrl) ? providedUrl : null;
+
+        let domain: string | null = null;
+        if (providedUrl) {
+          try { domain = new URL(providedUrl).hostname; } catch { /* invalid URL */ }
+        }
+
+        if (doi) existingDois.add(doi);
+        existingTitles.add(p.title.trim().toLowerCase());
+
+        rows.push({
+          list_id: listId,
+          link_type: "paper",
+          url: providedUrl,
+          title: p.title.trim(),
+          description: p.description?.trim() || null,
+          image_url: null,
+          favicon_url: null,
+          domain,
+          position: nextPosition + rows.length,
+          doi,
+          citation_authors: p.citation_authors?.trim() || null,
+          citation_year: p.citation_year ?? null,
+          citation_venue: p.citation_venue?.trim() || null,
+          pdf_url,
+        });
+      }
+
+      if (rows.length === 0) {
+        return NextResponse.json({ links: [], duplicatesSkipped });
+      }
+
+      const { data: insertedLinks, error } = await supabase
+        .from("links")
+        .insert(rows)
+        .select();
+
+      if (error) {
+        console.error("[api/links] Paper insert error:", error);
+        return NextResponse.json({ error: "Failed to add paper" }, { status: 500 });
+      }
+
+      return NextResponse.json({ links: insertedLinks, duplicatesSkipped });
+    }
+
+    // ── URL path ─────────────────────────────────────────────────────────────
+    const { rawText } = body;
+
+    if (!rawText) {
+      return NextResponse.json(
+        { error: "rawText, paper, or papers is required" },
+        { status: 400 },
+      );
+    }
+
     // Get existing URLs to detect duplicates
     const { data: existingLinks } = await supabase
       .from("links")
       .select("url")
       .eq("list_id", listId);
 
-    const existingUrls = new Set(existingLinks?.map((l) => l.url) || []);
+    const existingUrls = new Set(
+      (existingLinks ?? []).map((l) => l.url).filter(Boolean),
+    );
 
-    // Extract and deduplicate URLs
     const urls = extractUrls(rawText).filter((u) => !existingUrls.has(u));
 
     if (urls.length === 0) {
@@ -61,11 +164,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Scrape metadata
     const scraped = await scrapeUrls(urls);
 
     const linksToInsert = scraped.map((s, i) => ({
       list_id: listId,
+      link_type: "url",
       url: s.url,
       title: s.title,
       description: s.description,
@@ -104,6 +207,9 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/links — Remove a link by ID
 export async function DELETE(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { searchParams } = new URL(request.url);
     const linkId = searchParams.get("id");
@@ -138,6 +244,9 @@ export async function DELETE(request: NextRequest) {
 
 // PUT /api/links — Reorder links
 export async function PUT(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
   try {
     const { listId, orderedIds } = await request.json();
 

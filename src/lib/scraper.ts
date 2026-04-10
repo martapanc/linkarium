@@ -4,8 +4,39 @@ import type { ScrapeResult } from "./types";
 
 const SCRAPE_TIMEOUT_MS = 8000;
 
+function isPdfUrl(url: string): boolean {
+  try {
+    const path = new URL(url).pathname;
+    return /\.pdf$/i.test(path);
+  } catch {
+    return false;
+  }
+}
+
+function titleFromPdfUrl(url: string): string | null {
+  try {
+    const path = new URL(url).pathname;
+    const filename = path.split("/").pop() ?? "";
+    const name = decodeURIComponent(filename.replace(/\.pdf$/i, ""));
+    return name.replace(/[-_]+/g, " ").trim() || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function scrapeUrl(url: string): Promise<ScrapeResult> {
   const domain = extractDomain(url);
+
+  if (isPdfUrl(url)) {
+    return {
+      url,
+      title: titleFromPdfUrl(url),
+      description: null,
+      image_url: null,
+      favicon_url: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+      domain,
+    };
+  }
 
   try {
     const { result } = await ogs({

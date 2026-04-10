@@ -1,14 +1,54 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import type React from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { DbList, DbLink, SortConfig, SortField } from "@/lib/types";
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
+import { useWriteToken } from "@/lib/useWriteToken";
 import { LinkCard } from "./LinkCard";
 import { AddLinksForm } from "./AddLinksForm";
 import { SearchFilterBar } from "./SearchFilterBar";
 import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
+import { WriteGuard } from "./WriteGuard";
+
+function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: props.link.id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0 : 1,
+      }}
+    >
+      <LinkCard {...props} dragHandleProps={{ ...attributes, ...listeners }} />
+    </div>
+  );
+}
 
 interface Props {
   list: DbList;
@@ -16,6 +56,8 @@ interface Props {
 }
 
 export function ListView({ list, initialLinks }: Props) {
+  const router = useRouter();
+  const { token, authFetch } = useWriteToken();
   const [links, setLinks] = useState<DbLink[]>(initialLinks);
   const [search, setSearch] = useState("");
   const [domainFilter, setDomainFilter] = useState<string | null>(null);
@@ -24,6 +66,46 @@ export function ListView({ list, initialLinks }: Props) {
     direction: "asc",
   });
   const [isAdding, setIsAdding] = useState(false);
+
+  const canWrite = !!token;
+
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeLink = useMemo(() => links.find((l) => l.id === activeId) ?? null, [links, activeId]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  }, []);
+
+  const handleDragEnd = useCallback(
+    async (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      setLinks((prev) => {
+        const oldIndex = prev.findIndex((l) => l.id === active.id);
+        const newIndex = prev.findIndex((l) => l.id === over.id);
+        const reordered = arrayMove(prev, oldIndex, newIndex).map((l, i) => ({
+          ...l,
+          position: i,
+        }));
+
+        authFetch("/api/links", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, orderedIds: reordered.map((l) => l.id) }),
+        }).catch(() => toast.error("Failed to save order"));
+
+        return reordered;
+      });
+      setActiveId(null);
+    },
+    [list.id, authFetch],
+  );
 
   // Unique domains for filter dropdown
   const domains = useMemo(() => {
@@ -40,8 +122,11 @@ export function ListView({ list, initialLinks }: Props) {
       const q = search.toLowerCase();
       result = result.filter(
         (l) =>
-          l.url.toLowerCase().includes(q) ||
+          l.url?.toLowerCase().includes(q) ||
           l.title?.toLowerCase().includes(q) ||
+          l.citation_authors?.toLowerCase().includes(q) ||
+          l.citation_venue?.toLowerCase().includes(q) ||
+          l.citation_year?.toString().includes(q) ||
           l.description?.toLowerCase().includes(q) ||
           l.domain?.toLowerCase().includes(q),
       );
@@ -78,7 +163,7 @@ export function ListView({ list, initialLinks }: Props) {
     async (rawText: string) => {
       setIsAdding(true);
       try {
-        const res = await fetch("/api/links", {
+        const res = await authFetch("/api/links", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ listId: list.id, rawText }),
@@ -108,7 +193,7 @@ export function ListView({ list, initialLinks }: Props) {
         setIsAdding(false);
       }
     },
-    [list.id],
+    [list.id, authFetch],
   );
 
   // Delete link handler
@@ -116,19 +201,84 @@ export function ListView({ list, initialLinks }: Props) {
     setLinks((prev) => prev.filter((l) => l.id !== linkId));
 
     try {
-      const res = await fetch(`/api/links?id=${linkId}`, { method: "DELETE" });
+      const res = await authFetch(`/api/links?id=${linkId}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       toast.success("Link removed");
     } catch {
-      // Revert on failure — refetch
       toast.error("Failed to remove link");
     }
-  }, []);
+  }, [authFetch]);
+
+  // Add paper handler
+  const handleAddPaper = useCallback(
+    async (paper: PaperInput) => {
+      setIsAdding(true);
+      try {
+        const res = await authFetch("/api/links", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, paper }),
+        });
+
+        if (!res.ok) throw new Error("Failed to add paper");
+
+        const { links: newLinks, duplicatesSkipped } = await res.json();
+
+        if (newLinks.length > 0) {
+          setLinks((prev) => [...prev, ...newLinks]);
+          toast.success("Paper reference added");
+        } else if (duplicatesSkipped > 0) {
+          toast("This paper is already in your list");
+        }
+      } catch {
+        toast.error("Failed to add paper reference");
+      } finally {
+        setIsAdding(false);
+      }
+    },
+    [list.id, authFetch],
+  );
+
+  // Batch add papers handler
+  const handleAddPapers = useCallback(
+    async (papers: PaperInput[]) => {
+      setIsAdding(true);
+      try {
+        const res = await authFetch("/api/links", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listId: list.id, papers }),
+        });
+
+        if (!res.ok) throw new Error("Failed to add papers");
+
+        const { links: newLinks, duplicatesSkipped } = await res.json();
+
+        if (newLinks.length > 0) {
+          setLinks((prev) => [...prev, ...newLinks]);
+          toast.success(
+            `Added ${newLinks.length} paper${newLinks.length !== 1 ? "s" : ""}`,
+          );
+        }
+        if (duplicatesSkipped > 0) {
+          toast(`${duplicatesSkipped} already in list — skipped`);
+        }
+        if (newLinks.length === 0 && duplicatesSkipped === 0) {
+          toast.error("No papers were added");
+        }
+      } catch {
+        toast.error("Failed to add paper references");
+      } finally {
+        setIsAdding(false);
+      }
+    },
+    [list.id, authFetch],
+  );
 
   // Re-scrape handler
   const handleRescrape = useCallback(async (link: DbLink) => {
     try {
-      const res = await fetch("/api/scrape", {
+      const res = await authFetch("/api/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: link.url, linkId: link.id }),
@@ -156,7 +306,15 @@ export function ListView({ list, initialLinks }: Props) {
     } catch {
       toast.error("Failed to refresh metadata");
     }
-  }, []);
+  }, [authFetch]);
+
+  // Delete list handler
+  const handleDeleteList = useCallback(async () => {
+    const res = await authFetch(`/api/lists?id=${list.id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error("Failed to delete");
+    toast.success("List deleted");
+    router.push("/");
+  }, [list.id, authFetch, router]);
 
   // Sort change handler
   const handleSortChange = useCallback((field: SortField) => {
@@ -178,19 +336,24 @@ export function ListView({ list, initialLinks }: Props) {
           >
             Linkarium
           </a>
-          <ShareButton listId={list.id} />
+          <div className="flex items-center gap-3">
+            <WriteGuard />
+            <ShareButton listId={list.id} />
+          </div>
         </div>
       </nav>
 
       <main className="flex-1 px-4 sm:px-6 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {/* List header (editable title + description) */}
-          <ListHeader list={list} linkCount={links.length} />
+          <ListHeader list={list} linkCount={links.length} onDelete={handleDeleteList} canWrite={canWrite} />
 
-          {/* Add links */}
-          <div className="mt-8">
-            <AddLinksForm onAdd={handleAddLinks} isAdding={isAdding} />
-          </div>
+          {/* Add links — only shown when unlocked */}
+          {canWrite && (
+            <div className="mt-8">
+              <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} isAdding={isAdding} />
+            </div>
+          )}
 
           {/* Search / filter / sort bar */}
           {links.length > 0 && (
@@ -229,15 +392,44 @@ export function ListView({ list, initialLinks }: Props) {
             </div>
           ) : (
             <div className="mt-6 grid gap-3">
-              {filteredLinks.map((link, i) => (
-                <LinkCard
-                  key={link.id}
-                  link={link}
-                  index={i}
-                  onDelete={handleDelete}
-                  onRescrape={handleRescrape}
-                />
-              ))}
+              {canWrite && sort.field === "position" ? (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                  <SortableContext items={filteredLinks.map((l) => l.id)} strategy={verticalListSortingStrategy}>
+                    {filteredLinks.map((link, i) => (
+                      <SortableLinkCard
+                        key={link.id}
+                        link={link}
+                        index={i}
+                        onDelete={handleDelete}
+                        onRescrape={handleRescrape}
+                        canWrite={canWrite}
+                      />
+                    ))}
+                  </SortableContext>
+                  <DragOverlay dropAnimation={null}>
+                    {activeLink && (
+                      <LinkCard
+                        link={activeLink}
+                        index={0}
+                        onDelete={handleDelete}
+                        onRescrape={handleRescrape}
+                        canWrite={canWrite}
+                      />
+                    )}
+                  </DragOverlay>
+                </DndContext>
+              ) : (
+                filteredLinks.map((link, i) => (
+                  <LinkCard
+                    key={link.id}
+                    link={link}
+                    index={i}
+                    onDelete={handleDelete}
+                    onRescrape={handleRescrape}
+                    canWrite={canWrite}
+                  />
+                ))
+              )}
             </div>
           )}
         </div>
