@@ -41,6 +41,7 @@ function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   return (
     <div
       ref={setNodeRef}
+      className="min-w-0"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
@@ -333,7 +334,7 @@ export function ListView({ list, initialLinks }: Props) {
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
       <nav className="border-b border-sand-200 px-4 sm:px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
           <a
             href="/"
             className="font-display text-xl text-sand-900 tracking-tight hover:text-coral-500 transition-colors"
@@ -349,20 +350,20 @@ export function ListView({ list, initialLinks }: Props) {
       </nav>
 
       <main className="flex-1 px-4 sm:px-6 py-8 md:py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* List header (editable title + description) */}
           <ListHeader list={list} linkCount={links.length} onDelete={handleDeleteList} canWrite={canWrite} />
 
           {/* Add links — only shown when unlocked */}
           {canWrite && (
-            <div className="mt-8">
+            <div className="mt-4 sm:mt-8">
               <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} isAdding={isAdding} />
             </div>
           )}
 
           {/* Search / filter / sort bar */}
           {links.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-4 sm:mt-8">
               <SearchFilterBar
                 search={search}
                 onSearchChange={setSearch}
@@ -394,7 +395,7 @@ export function ListView({ list, initialLinks }: Props) {
               </button>
             </div>
           ) : (
-            <div className="mt-6 grid gap-3">
+            <div className="mt-4 sm:mt-6 grid gap-1.5 sm:gap-3">
               {canWrite && sort.field === "position" ? (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                   <SortableContext items={filteredLinks.map((l) => l.id)} strategy={verticalListSortingStrategy}>

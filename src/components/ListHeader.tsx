@@ -167,7 +167,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
                 })}
               </AlertDialog.Description>
 
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="mt-4 sm:mt-6 flex justify-end gap-3">
                 <AlertDialog.Cancel asChild>
                   <button className="px-4 py-2 text-sm font-medium text-sand-600 bg-sand-100 hover:bg-sand-200 rounded-lg transition-colors cursor-pointer">
                     {t("cancel")}

@@ -136,7 +136,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         <button
           onClick={() => setMode("links")}
           className="
-            flex-1 border-2 border-dashed border-sand-200 rounded-xl
+            flex-1 border-2 border-dashed border-sand-200 rounded-lg
             py-4 px-5
             text-sand-400 hover:text-coral-500 hover:border-coral-300
             transition-all duration-200
@@ -156,7 +156,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
   if (mode === "links") {
     return (
-      <div className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-lg border border-sand-200 overflow-hidden shadow-sm">
         <textarea
           autoFocus
           placeholder={t("textareaPlaceholder")}
@@ -211,7 +211,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
   return (
     <Tabs.Root
       defaultValue="manual"
-      className="bg-white rounded-xl border border-sand-200 overflow-hidden shadow-sm"
+      className="bg-white rounded-lg border border-sand-200 overflow-hidden shadow-sm"
     >
       <Tabs.List className="flex border-b border-sand-100">
         {(["manual", "batch"] as const).map((tab) => (

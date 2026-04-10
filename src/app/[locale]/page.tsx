@@ -129,7 +129,7 @@ export default function Home() {
                 className="
                   bg-coral-500 hover:bg-coral-600 active:bg-coral-600
                   text-white font-medium text-sm
-                  px-6 py-2.5 rounded-xl
+                  px-6 py-2.5 rounded-lg
                   transition-all duration-150
                   disabled:opacity-50 disabled:cursor-not-allowed
                   cursor-pointer

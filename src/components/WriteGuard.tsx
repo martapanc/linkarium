@@ -76,7 +76,7 @@ export function WriteGuard({ onUnlock }: Props) {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <form
             onSubmit={handleSubmit}
-            className="absolute right-0 top-8 z-50 bg-white rounded-xl border border-sand-200 shadow-lg p-4 w-64"
+            className="absolute right-0 top-8 z-50 bg-white rounded-lg border border-sand-200 shadow-lg p-4 w-64"
           >
             <p className="text-xs font-medium text-sand-700 mb-2">{t("enterPassphrase")}</p>
             <input

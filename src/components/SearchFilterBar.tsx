@@ -74,7 +74,7 @@ export function SearchFilterBar({
           onChange={(e) => onSearchChange(e.target.value)}
           className="
             w-full pl-10 pr-4 py-2.5
-            bg-white border border-sand-200 rounded-xl
+            bg-white border border-sand-200 rounded-lg
             text-sm text-sand-800 placeholder:text-sand-300
             focus:outline-none focus:border-sand-300
             transition-colors
