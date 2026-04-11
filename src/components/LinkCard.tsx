@@ -129,7 +129,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
 
             <div className="flex justify-between">
               {link.url && (
-                <p className="text-xs text-sand-400 truncate mt-0.5">
+                <p className="text-xs text-sand-600 truncate mt-0.5">
                   {link.url}
                 </p>
               )}
@@ -150,7 +150,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
                   </span>
                 )}
                 {!link.url && !link.pdf_url && (
-                  <span className="text-xs text-sand-300 shrink-0">{t("noPublicLink")}</span>
+                  <span className="text-xs text-sand-500 shrink-0">{t("noPublicLink")}</span>
                 )}
               </div>
             </div>
@@ -161,7 +161,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, canWrite, dragHand
               {link.title || link.url || "Untitled"}
             </h3>
             <div className="flex items-center gap-2 mt-0.5 min-w-0">
-              <span className="text-xs text-sand-400 truncate min-w-0">
+              <span className="text-xs text-sand-600 truncate min-w-0">
                 {link.domain || link.url}
               </span>
               <svg

@@ -385,7 +385,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
             <EmptyState />
           ) : filteredLinks.length === 0 ? (
             <div className="mt-12 text-center">
-              <p className="text-sand-400 text-sm">{t("noMatch")}</p>
+              <p className="text-sand-600 text-sm">{t("noMatch")}</p>
               <button
                 onClick={() => {
                   setSearch("");
