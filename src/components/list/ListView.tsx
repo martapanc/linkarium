@@ -26,14 +26,14 @@ import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/ty
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
-import { LinkCard } from "./LinkCard";
-import { AddLinksForm } from "./AddLinksForm";
+import { LinkCard } from "../link-card/LinkCard";
+import { AddLinksForm } from "../add-links/AddLinksForm";
 import { SearchFilterBar } from "./SearchFilterBar";
 import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
-import { WriteGuard } from "./WriteGuard";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { WriteGuard } from "../WriteGuard";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
