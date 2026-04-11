@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
             text-xs font-medium px-1.5 py-0.5 rounded transition-colors cursor-pointer
             ${locale === loc
               ? "text-coral-500"
-              : "text-sand-400 hover:text-sand-600"}
+              : "text-sand-600 hover:text-sand-800"}
           `}
         >
           {LOCALE_LABELS[loc] ?? loc.toUpperCase()}

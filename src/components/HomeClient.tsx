@@ -83,7 +83,7 @@ export function HomeClient({ flags }: Props) {
               href="https://github.com/martapanc/linkarium"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-sand-500 hover:text-sand-700 transition-colors"
+              className="text-sm text-sand-500 hover:text-sand-800 transition-colors"
             >
               {tNav("github")}
             </a>
@@ -99,7 +99,7 @@ export function HomeClient({ flags }: Props) {
             <br />
             <span className="text-coral-500 italic">{t("headline2")}</span>
           </h1>
-          <p className="text-lg text-sand-500 max-w-82 mx-auto">
+          <p className="text-lg text-sand-700 max-w-82 mx-auto">
             {t.rich("tagline", { br: () => <br /> })}
           </p>
         </div>
@@ -107,7 +107,7 @@ export function HomeClient({ flags }: Props) {
         {/* Create form */}
         <div className="max-w-2xl w-full">
           {!canWrite && (
-            <div className="mb-8 text-center text-sm text-sand-400">
+            <div className="mb-8 text-center text-sm text-sand-500">
               {t("unlockHint")}
             </div>
           )}
@@ -118,7 +118,7 @@ export function HomeClient({ flags }: Props) {
                 placeholder={t("titlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-transparent text-lg font-medium text-sand-900 placeholder:text-sand-300 focus:outline-none"
+                className="w-full bg-transparent text-lg font-medium text-sand-900 placeholder:text-sand-500 focus:outline-none"
                 maxLength={100}
               />
             </div>
@@ -129,12 +129,12 @@ export function HomeClient({ flags }: Props) {
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
                 rows={8}
-                className="w-full bg-transparent text-sand-800 placeholder:text-sand-300 text-[15px] leading-relaxed resize-none focus:outline-none font-mono"
+                className="w-full bg-transparent text-sand-800 placeholder:text-sand-500 text-[15px] leading-relaxed resize-none focus:outline-none font-mono"
               />
             </div>
 
             <div className="border-t border-sand-100 px-5 py-4 flex items-center justify-between">
-              <span className="text-xs text-sand-400">
+              <span className="text-xs text-sand-500">
                 {rawText.trim()
                   ? looksLikeCitations(rawText)
                     ? t("citationsDetected", { count: parseCitations(rawText).length })
@@ -176,14 +176,14 @@ export function HomeClient({ flags }: Props) {
                   {item.step}
                 </div>
                 <h3 className="font-display text-xl text-sand-800 mb-1">{item.title}</h3>
-                <p className="text-sm text-sand-500 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-sand-700 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </main>
 
-      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-400">
+      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-500">
         {t("footer")}
       </footer>
     </div>

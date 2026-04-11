@@ -442,7 +442,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-400">
+      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-600">
         {canWrite ? (
           <a href="/" className="hover:text-coral-500 transition-colors">
             {t("footer")}
