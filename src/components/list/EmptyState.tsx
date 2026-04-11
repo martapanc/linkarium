@@ -23,7 +23,7 @@ export function EmptyState() {
         </svg>
       </div>
       <h2 className="font-display text-2xl text-sand-700 mb-2">{t("title")}</h2>
-      <p className="text-sm text-sand-400 max-w-xs">{t("description")}</p>
+      <p className="text-sm text-sand-600 max-w-xs">{t("description")}</p>
     </div>
   );
 }

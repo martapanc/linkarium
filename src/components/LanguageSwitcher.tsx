@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -25,12 +26,10 @@ export function LanguageSwitcher() {
         <button
           key={loc}
           onClick={() => switchLocale(loc)}
-          className={`
-            text-xs font-medium px-1.5 py-0.5 rounded transition-colors cursor-pointer
-            ${locale === loc
-              ? "text-coral-500"
-              : "text-sand-600 hover:text-sand-800"}
-          `}
+          className={clsx(
+            "text-xs font-medium px-1.5 py-0.5 rounded transition-colors cursor-pointer",
+            locale === loc ? "text-coral-500" : "text-sand-600 hover:text-sand-800"
+          )}
         >
           {LOCALE_LABELS[loc] ?? loc.toUpperCase()}
         </button>

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { DbList, DbLink } from "@/lib/types";
-import { ListView } from "@/components/ListView";
+import { ListView } from "@/components/list/ListView";
 import { getFeatureFlags } from "@/lib/feature-flags";
 
 interface PageProps {

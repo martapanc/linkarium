@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 
 interface Props {
@@ -21,15 +22,11 @@ export function ShareButton({ listId }: Props) {
   return (
     <button
       onClick={handleCopy}
-      className="
-        flex items-center gap-2
-        text-sm font-medium
-        px-4 py-2 rounded-lg
-        bg-sand-100 hover:bg-sand-200
-        text-sand-700
-        transition-all duration-150
-        cursor-pointer
-      "
+      className={clsx(
+        "flex items-center gap-2 px-4 py-2 rounded-lg",
+        "bg-sand-100 hover:bg-sand-200 text-sand-700",
+        "text-sm font-medium transition-all duration-150 cursor-pointer"
+      )}
     >
       {copied ? (
         <>

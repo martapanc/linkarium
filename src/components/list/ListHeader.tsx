@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import clsx from "clsx";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -85,16 +86,18 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
             }
           }}
           maxLength={100}
-          className="
-            w-full font-display text-3xl md:text-4xl text-sand-900
-            bg-transparent border-b-2 border-coral-400
-            focus:outline-none pb-1
-          "
+          className={clsx(
+            "w-full font-display text-3xl md:text-4xl text-sand-900 pb-1",
+            "bg-transparent border-b-2 border-coral-400 focus:outline-none"
+          )}
         />
       ) : (
         <h1
           onClick={() => canWrite && setIsEditingTitle(true)}
-          className={`font-display text-3xl md:text-4xl text-sand-900 leading-tight ${canWrite ? "cursor-text hover:text-coral-600 transition-colors" : ""}`}
+          className={clsx(
+            "font-display text-3xl md:text-4xl text-sand-900 leading-tight",
+            canWrite && "cursor-text hover:text-coral-600 transition-colors"
+          )}
           title={canWrite ? "Click to edit" : undefined}
         >
           {title}
@@ -116,16 +119,18 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
           }}
           rows={2}
           maxLength={500}
-          className="
-            w-full mt-2 text-sand-500 text-[15px]
-            bg-transparent border-b border-coral-300
-            focus:outline-none resize-none leading-relaxed
-          "
+          className={clsx(
+            "w-full mt-2 text-sand-700 text-[15px] leading-relaxed",
+            "bg-transparent border-b border-coral-300 focus:outline-none resize-none"
+          )}
         />
       ) : (
         <p
           onClick={() => canWrite && setIsEditingDesc(true)}
-          className={`mt-2 text-[15px] leading-relaxed ${canWrite ? "text-sand-400 cursor-text hover:text-sand-500 transition-colors" : "text-sand-400"}`}
+          className={clsx(
+            "mt-2 text-[15px] leading-relaxed text-sand-600",
+            canWrite && "cursor-text hover:text-sand-800 transition-colors"
+          )}
           title={canWrite ? t("descriptionPlaceholder") : undefined}
         >
           {description || (canWrite ? t("descriptionPlaceholder") : "")}
@@ -134,7 +139,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
 
       {/* Meta + delete */}
       <div className="mt-3 flex items-center gap-4">
-        <p className="text-xs text-sand-400">
+        <p className="text-xs text-sand-600">
           {t("linkCount", { count: linkCount })} · {t("created")}{" "}
           {new Date(list.created_at).toLocaleDateString(undefined, {
             day: "numeric",
@@ -145,22 +150,22 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
 
         {canWrite && <AlertDialog.Root>
           <AlertDialog.Trigger asChild>
-            <button className="text-xs text-sand-300 hover:text-red-400 transition-colors cursor-pointer">
+            <button className="text-xs text-sand-500 hover:text-red-500 transition-colors cursor-pointer">
               {t("deleteList")}
             </button>
           </AlertDialog.Trigger>
 
           <AlertDialog.Portal>
             <AlertDialog.Overlay className="fixed inset-0 z-40 bg-black/30 animate-in fade-in-0" />
-            <AlertDialog.Content className="
-              fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-              w-full max-w-md bg-white rounded-2xl shadow-xl p-6
-              animate-in fade-in-0 zoom-in-95
-            ">
+            <AlertDialog.Content className={clsx(
+              "fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+              "w-full max-w-md bg-white rounded-2xl shadow-xl p-6",
+              "animate-in fade-in-0 zoom-in-95"
+            )}>
               <AlertDialog.Title className="text-lg font-semibold text-sand-900">
                 {t("deleteTitle")}
               </AlertDialog.Title>
-              <AlertDialog.Description className="mt-2 text-sm text-sand-500">
+              <AlertDialog.Description className="mt-2 text-sm text-sand-600">
                 {t.rich("deleteDescription", {
                   title,
                   strong: (chunks) => <span className="font-medium text-sand-700">{chunks}</span>,

@@ -26,14 +26,14 @@ import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/ty
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
-import { LinkCard } from "./LinkCard";
-import { AddLinksForm } from "./AddLinksForm";
+import { LinkCard } from "../link-card/LinkCard";
+import { AddLinksForm } from "../add-links/AddLinksForm";
 import { SearchFilterBar } from "./SearchFilterBar";
 import { ShareButton } from "./ShareButton";
 import { ListHeader } from "./ListHeader";
 import { EmptyState } from "./EmptyState";
-import { WriteGuard } from "./WriteGuard";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { WriteGuard } from "../WriteGuard";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 function SortableLinkCard(props: React.ComponentProps<typeof LinkCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -385,7 +385,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
             <EmptyState />
           ) : filteredLinks.length === 0 ? (
             <div className="mt-12 text-center">
-              <p className="text-sand-400 text-sm">{t("noMatch")}</p>
+              <p className="text-sand-600 text-sm">{t("noMatch")}</p>
               <button
                 onClick={() => {
                   setSearch("");
