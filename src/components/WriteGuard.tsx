@@ -58,7 +58,7 @@ export function WriteGuard({ onUnlock }: Props) {
           }
         }}
         title={unlocked ? t("lockTitle") : t("unlockTitle")}
-        className="flex items-center gap-1.5 text-xs text-sand-400 hover:text-sand-600 transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 text-xs text-sand-600 hover:text-sand-800 transition-colors cursor-pointer"
       >
         {unlocked ? (
           <svg className="w-4 h-4 text-coral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
