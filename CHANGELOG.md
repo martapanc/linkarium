@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/martapanc/linkarium/compare/v1.3.0...v1.3.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* **layout:** move html/body shell to root layout so not-found page inherits styles ([5ccfde9](https://github.com/martapanc/linkarium/commit/5ccfde94c79b31b1bbca0ce94ff1962b561fc053))
+
 ## [1.3.0](https://github.com/martapanc/linkarium/compare/v1.2.0...v1.3.0) (2026-04-10)
 
 
