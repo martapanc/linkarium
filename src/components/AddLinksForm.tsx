@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useTranslations } from "next-intl";
 import { resolveDoi, isDoiPattern } from "@/lib/doi-resolver";
@@ -20,7 +21,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
   const t = useTranslations("addLinks");
   const [mode, setMode] = useState<Mode>("closed");
   const [text, setText] = useState("");
-  const [paperTab, setPaperTab] = useState<"manual" | "batch">("manual");
+  const [_, setPaperTab] = useState<"manual" | "batch">("manual");
   const [batchText, setBatchText] = useState("");
   const [parsedCount, setParsedCount] = useState(0);
 
@@ -135,15 +136,12 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
       <div className="flex gap-3">
         <button
           onClick={() => setMode("links")}
-          className="
-            flex-1 border-2 border-dashed border-sand-200 rounded-lg
-            py-4 px-5
-            text-sand-400 hover:text-coral-500 hover:border-coral-300
-            transition-all duration-200
-            flex items-center justify-center gap-2
-            text-sm font-medium
-            cursor-pointer
-          "
+          className={clsx(
+            "flex-1 flex items-center justify-center gap-2 py-4 px-5",
+            "border-2 border-dashed border-sand-200 rounded-lg",
+            "text-sm font-medium text-sand-600",
+            "hover:text-coral-500 hover:border-coral-300 transition-all duration-200 cursor-pointer"
+          )}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -168,20 +166,19 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         <div className="border-t border-sand-100 px-5 py-3 flex items-center justify-between">
           <button
             onClick={close}
-            className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer"
+            className="text-sm text-sand-600 hover:text-sand-800 transition-colors cursor-pointer"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleAddLinks}
             disabled={isAdding || !text.trim()}
-            className="
-              bg-coral-500 hover:bg-coral-600 text-white
-              text-sm font-medium px-5 py-2 rounded-lg
-              transition-colors duration-150
-              disabled:opacity-50 disabled:cursor-not-allowed
-              cursor-pointer
-            "
+            className={clsx(
+              "bg-coral-500 hover:bg-coral-600 text-white",
+              "text-sm font-medium px-5 py-2 rounded-lg",
+              "transition-colors duration-150 cursor-pointer",
+              "disabled:opacity-50 disabled:cursor-not-allowed"
+            )}
           >
             {isAdding ? (
               <span className="flex items-center gap-2">
@@ -218,13 +215,12 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
           <Tabs.Trigger
             key={tab}
             value={tab}
-            className="
-              flex-1 py-3 text-sm font-medium transition-colors cursor-pointer
-              text-sand-400 hover:text-sand-600
-              data-[state=active]:text-coral-500 data-[state=active]:border-b-2
-              data-[state=active]:border-coral-400 data-[state=active]:-mb-px
-              focus-visible:outline-none
-            "
+            className={clsx(
+              "flex-1 py-3 text-sm font-medium cursor-pointer focus-visible:outline-none",
+              "text-sand-600 hover:text-sand-800 transition-colors",
+              "data-[state=active]:text-coral-500 data-[state=active]:border-b-2",
+              "data-[state=active]:border-coral-400 data-[state=active]:-mb-px"
+            )}
           >
             {tab === "manual" ? t("tabSingle") : t("tabBatch")}
           </Tabs.Trigger>
@@ -233,10 +229,10 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
 
       {/* Batch tab */}
       <Tabs.Content value="batch" className="px-5 pt-4 pb-2">
-        <p className="text-xs text-sand-400 mb-3 leading-relaxed">
+        <p className="text-xs text-sand-600 mb-3 leading-relaxed">
           {t("batchFormat")}
           <br />
-          <span className="font-mono text-sand-500">{t("batchFormatExample")}</span>
+          <span className="font-mono text-sand-700">{t("batchFormatExample")}</span>
         </p>
         <textarea
           autoFocus
@@ -249,14 +245,14 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
           className="w-full text-sm text-sand-800 placeholder:text-sand-300 font-mono border border-sand-200 rounded-lg px-3 py-2.5 resize-none focus:outline-none focus:border-coral-300"
         />
         {batchText.trim() && (
-          <p className={`text-xs mt-1.5 ${parsedCount > 0 ? "text-coral-500" : "text-amber-500"}`}>
+          <p className={clsx("text-xs mt-1.5", parsedCount > 0 ? "text-coral-500" : "text-amber-500")}>
             {parsedCount > 0
               ? t("citationsDetected", { count: parsedCount })
               : t("noCitationsRecognised")}
           </p>
         )}
         <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
-          <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
+          <button onClick={close} className="text-sm text-sand-600 hover:text-sand-800 transition-colors cursor-pointer">
             {t("cancel")}
           </button>
           <button
@@ -348,7 +344,7 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
         </div>
 
         <div className="border-t border-sand-100 mt-4 -mx-5 px-5 pt-3 pb-1 flex items-center justify-between">
-          <button onClick={close} className="text-sm text-sand-400 hover:text-sand-600 transition-colors cursor-pointer">
+          <button onClick={close} className="text-sm text-sand-600 hover:text-sand-800 transition-colors cursor-pointer">
             {t("cancel")}
           </button>
           <button

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Linkarium — Create & share link lists instantly",
@@ -22,7 +23,7 @@ export default async function LocaleLayout({
   children,
   params,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;

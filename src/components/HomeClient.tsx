@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -83,7 +84,7 @@ export function HomeClient({ flags }: Props) {
               href="https://github.com/martapanc/linkarium"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-sand-500 hover:text-sand-800 transition-colors"
+              className="text-sm text-sand-700 hover:text-sand-900 transition-colors"
             >
               {tNav("github")}
             </a>
@@ -107,11 +108,14 @@ export function HomeClient({ flags }: Props) {
         {/* Create form */}
         <div className="max-w-2xl w-full">
           {!canWrite && (
-            <div className="mb-8 text-center text-sm text-sand-500">
+            <div className="mb-8 text-center text-sm text-sand-700">
               {t("unlockHint")}
             </div>
           )}
-          <div className={`bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden ${!canWrite ? "opacity-50 pointer-events-none select-none" : ""}`}>
+          <div className={clsx(
+            "bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden",
+            !canWrite && "opacity-50 pointer-events-none select-none"
+          )}>
             <div className="border-b border-sand-100 px-5 py-3">
               <input
                 type="text"
@@ -134,7 +138,7 @@ export function HomeClient({ flags }: Props) {
             </div>
 
             <div className="border-t border-sand-100 px-5 py-4 flex items-center justify-between">
-              <span className="text-xs text-sand-500">
+              <span className="text-xs text-sand-600">
                 {rawText.trim()
                   ? looksLikeCitations(rawText)
                     ? t("citationsDetected", { count: parseCitations(rawText).length })
@@ -144,14 +148,12 @@ export function HomeClient({ flags }: Props) {
               <button
                 onClick={handleCreate}
                 disabled={isCreating}
-                className="
-                  bg-coral-500 hover:bg-coral-600 active:bg-coral-600
-                  text-white font-medium text-sm
-                  px-6 py-2.5 rounded-lg
-                  transition-all duration-150
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  cursor-pointer
-                "
+                className={clsx(
+                  "bg-coral-500 hover:bg-coral-600 active:bg-coral-600 text-white",
+                  "font-medium text-sm px-6 py-2.5 rounded-lg",
+                  "transition-all duration-150 cursor-pointer",
+                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                )}
               >
                 {isCreating ? (
                   <span className="flex items-center gap-2">
@@ -183,7 +185,7 @@ export function HomeClient({ flags }: Props) {
         </div>
       </main>
 
-      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-500">
+      <footer className="border-t border-sand-200 px-6 py-6 text-center text-xs text-sand-600">
         {t("footer")}
       </footer>
     </div>
