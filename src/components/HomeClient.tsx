@@ -93,7 +93,7 @@ export function HomeClient({ flags }: Props) {
       </nav>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center px-6 pt-16 pb-24 md:pt-24">
+      <main className="flex-1 flex flex-col items-center px-6 pt-12 pb-16 md:pt-20">
         <div className="max-w-2xl w-full text-center mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-sand-900 mb-4 tracking-tight leading-tight">
             {t("headline1")}
