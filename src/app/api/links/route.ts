@@ -242,6 +242,54 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
+// PATCH /api/links — Update a link's editable fields
+export async function PATCH(request: NextRequest) {
+  const deny = requireWriteToken(request);
+  if (deny) return deny;
+
+  try {
+    const { id, title, description, url, citation_authors, citation_year, citation_venue } =
+      await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "Link ID required" }, { status: 400 });
+    }
+
+    const updates: Record<string, unknown> = {};
+    if (title !== undefined) updates.title = title?.trim() || null;
+    if (description !== undefined) updates.description = description?.trim() || null;
+    if (url !== undefined) {
+      updates.url = url?.trim() || null;
+      try {
+        updates.domain = url?.trim() ? new URL(url.trim()).hostname.replace(/^www\./, "") : null;
+      } catch {
+        updates.domain = null;
+      }
+    }
+    if (citation_authors !== undefined) updates.citation_authors = citation_authors?.trim() || null;
+    if (citation_year !== undefined) updates.citation_year = citation_year ?? null;
+    if (citation_venue !== undefined) updates.citation_venue = citation_venue?.trim() || null;
+
+    const supabase = await createServerSupabase();
+    const { data, error } = await supabase
+      .from("links")
+      .update(updates)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("[api/links] PATCH error:", error);
+      return NextResponse.json({ error: "Failed to update link" }, { status: 500 });
+    }
+
+    return NextResponse.json({ link: data });
+  } catch (error) {
+    console.error("[api/links] PATCH error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
 // PUT /api/links — Reorder links
 export async function PUT(request: NextRequest) {
   const deny = requireWriteToken(request);
