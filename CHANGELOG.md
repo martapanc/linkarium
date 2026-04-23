@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/martapanc/linkarium/compare/v1.3.1...v1.4.0) (2026-04-23)
+
+
+### Features
+
+* **citation-parser:** support plain citation format without underscore markup ([6ec59c2](https://github.com/martapanc/linkarium/commit/6ec59c2b9da3baedaf5f6f9b06e61cbb6139d46d))
+* **links:** add inline edit for links in write mode ([f393de6](https://github.com/martapanc/linkarium/commit/f393de670b158850d07e99b764a83e0142525a68))
+
 ## [1.3.1](https://github.com/martapanc/linkarium/compare/v1.3.0...v1.3.1) (2026-04-11)
 
 
