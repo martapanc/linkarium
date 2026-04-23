@@ -282,6 +282,38 @@ export function ListView({ list, initialLinks, flags }: Props) {
     [list.id, authFetch],
   );
 
+  // Edit link handler
+  const handleEdit = useCallback(
+    async (
+      linkId: string,
+      payload: {
+        title?: string | null;
+        description?: string | null;
+        url?: string | null;
+        citation_authors?: string | null;
+        citation_year?: number | null;
+        citation_venue?: string | null;
+      },
+    ) => {
+      try {
+        const res = await authFetch("/api/links", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: linkId, ...payload }),
+        });
+
+        if (!res.ok) throw new Error();
+
+        const { link: updated } = await res.json();
+        setLinks((prev) => prev.map((l) => (l.id === linkId ? updated : l)));
+        toast.success("Link updated");
+      } catch {
+        toast.error("Failed to update link");
+      }
+    },
+    [authFetch],
+  );
+
   // Re-scrape handler
   const handleRescrape = useCallback(async (link: DbLink) => {
     try {
@@ -408,6 +440,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
                         index={i}
                         onDelete={handleDelete}
                         onRescrape={handleRescrape}
+                        onEdit={handleEdit}
                         canWrite={canWrite}
                       />
                     ))}
@@ -419,6 +452,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
                         index={0}
                         onDelete={handleDelete}
                         onRescrape={handleRescrape}
+                        onEdit={handleEdit}
                         canWrite={canWrite}
                       />
                     )}
@@ -432,6 +466,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
                     index={i}
                     onDelete={handleDelete}
                     onRescrape={handleRescrape}
+                    onEdit={handleEdit}
                     canWrite={canWrite}
                   />
                 ))

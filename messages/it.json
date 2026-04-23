@@ -81,8 +81,18 @@
     "copyUrl": "Copia URL",
     "copyTitle": "Copia titolo",
     "refreshMetadata": "Aggiorna metadati",
+    "edit": "Modifica",
     "remove": "Rimuovi",
-    "dragToReorder": "Trascina per riordinare"
+    "dragToReorder": "Trascina per riordinare",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "saving": "Salvataggio…",
+    "titleField": "Titolo",
+    "descriptionField": "Descrizione",
+    "urlField": "URL",
+    "authorsField": "Autori",
+    "yearField": "Anno",
+    "venueField": "Rivista / Convegno"
   },
   "emptyState": {
     "title": "Nessun link ancora",

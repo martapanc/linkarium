@@ -81,8 +81,18 @@
     "copyUrl": "Copy URL",
     "copyTitle": "Copy title",
     "refreshMetadata": "Refresh metadata",
+    "edit": "Edit",
     "remove": "Remove",
-    "dragToReorder": "Drag to reorder"
+    "dragToReorder": "Drag to reorder",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "titleField": "Title",
+    "descriptionField": "Description",
+    "urlField": "URL",
+    "authorsField": "Authors",
+    "yearField": "Year",
+    "venueField": "Journal / Venue"
   },
   "emptyState": {
     "title": "No links yet",
