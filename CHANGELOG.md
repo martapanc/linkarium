@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.1](https://github.com/martapanc/linkarium/compare/v1.4.0...v1.4.1) (2026-04-29)
+
+
+### Bug Fixes
+
+* **add-links:** process plain URLs alongside citations and clarify mi… ([a42c07d](https://github.com/martapanc/linkarium/commit/a42c07d331a65db271024168b0db702fe23ee074))
+* **add-links:** process plain URLs alongside citations and clarify mixed-result toasts ([f80d29b](https://github.com/martapanc/linkarium/commit/f80d29b2f450b63a5343ed9e0d08cd9495b66466))
+* **url-parser:** strip trailing ) and sentence punctuation from extracted URLs ([7c99479](https://github.com/martapanc/linkarium/commit/7c994790e7047e6b77c95a4813c943b43dda386c))
+
 ## [1.4.0](https://github.com/martapanc/linkarium/compare/v1.3.1...v1.4.0) (2026-04-23)
 
 
