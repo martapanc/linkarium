@@ -9,6 +9,7 @@ permissions:
 jobs:
   release:
     uses: martapanc/shared-workflows/.github/workflows/release-please.yml@master
+    secrets: inherit
     with:
       release-type: node
     permissions:
