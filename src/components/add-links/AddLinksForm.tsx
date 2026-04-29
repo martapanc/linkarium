@@ -32,7 +32,16 @@ export function AddLinksForm({ onAdd, onAddPaper, onAddPapers, isAdding }: Props
     if (looksLikeCitations(text)) {
       const papers = parseCitations(text);
       if (papers.length) {
+        // Also collect any non-citation lines (plain URLs) so they aren't silently dropped
+        const urlOnlyText = text
+          .split(/\n+/)
+          .filter(line => !line.trim().startsWith("["))
+          .join("\n")
+          .trim();
         await onAddPapers(papers);
+        if (urlOnlyText) {
+          await onAdd(urlOnlyText);
+        }
         setText("");
         setMode("closed");
         return;

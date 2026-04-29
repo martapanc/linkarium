@@ -182,16 +182,12 @@ export function ListView({ list, initialLinks, flags }: Props) {
 
         if (newLinks.length > 0) {
           setLinks((prev) => [...prev, ...newLinks]);
-          toast.success(
-            `Added ${newLinks.length} link${newLinks.length !== 1 ? "s" : ""}`,
-          );
-        }
-
-        if (duplicatesSkipped > 0) {
-          toast(`${duplicatesSkipped} duplicate(s) skipped`);
-        }
-
-        if (newLinks.length === 0 && duplicatesSkipped === 0) {
+          const added = `Added ${newLinks.length} link${newLinks.length !== 1 ? "s" : ""}`;
+          const skipped = duplicatesSkipped > 0 ? ` (${duplicatesSkipped} already in list — skipped)` : "";
+          toast.success(added + skipped);
+        } else if (duplicatesSkipped > 0) {
+          toast(`${duplicatesSkipped} already in list — skipped`);
+        } else {
           toast.error("No valid URLs found in your input");
         }
       } catch {
@@ -263,14 +259,12 @@ export function ListView({ list, initialLinks, flags }: Props) {
 
         if (newLinks.length > 0) {
           setLinks((prev) => [...prev, ...newLinks]);
-          toast.success(
-            `Added ${newLinks.length} paper${newLinks.length !== 1 ? "s" : ""}`,
-          );
-        }
-        if (duplicatesSkipped > 0) {
+          const added = `Added ${newLinks.length} paper${newLinks.length !== 1 ? "s" : ""}`;
+          const skipped = duplicatesSkipped > 0 ? ` (${duplicatesSkipped} already in list — skipped)` : "";
+          toast.success(added + skipped);
+        } else if (duplicatesSkipped > 0) {
           toast(`${duplicatesSkipped} already in list — skipped`);
-        }
-        if (newLinks.length === 0 && duplicatesSkipped === 0) {
+        } else {
           toast.error("No papers were added");
         }
       } catch {
