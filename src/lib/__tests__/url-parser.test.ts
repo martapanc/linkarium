@@ -80,6 +80,42 @@ describe("extractUrls", () => {
     const input = "[Smith 2020] Jane Smith, _Title_, Nature, 2020";
     expect(extractUrls(input)).toEqual([]);
   });
+
+  // ─── trailing punctuation stripping ───────────────────────────────────
+
+  test("strips unbalanced trailing ) from markdown [text](url) syntax", () => {
+    const input =
+      "Vedi [dati di traffico](https://www.ilpost.it/2025/08/28/chiusura-phica-eu/), poco prima";
+    expect(extractUrls(input)).toEqual([
+      "https://www.ilpost.it/2025/08/28/chiusura-phica-eu/",
+    ]);
+  });
+
+  test("preserves balanced parentheses in Wikipedia-style URLs", () => {
+    const url =
+      "https://en.wikipedia.org/wiki/Python_(programming_language)";
+    expect(extractUrls(url)).toEqual([url]);
+  });
+
+  test("strips trailing period from URL at end of sentence", () => {
+    expect(extractUrls("See https://example.com.")).toEqual([
+      "https://example.com",
+    ]);
+  });
+
+  test("strips trailing comma after URL in prose", () => {
+    const input = "Try https://example.com, then https://example.org.";
+    expect(extractUrls(input)).toEqual([
+      "https://example.com",
+      "https://example.org",
+    ]);
+  });
+
+  test("does not strip trailing / (valid URL component)", () => {
+    expect(extractUrls("https://example.com/path/")).toEqual([
+      "https://example.com/path/",
+    ]);
+  });
 });
 
 // ─── extractDomain ─────────────────────────────────────────────────────────
