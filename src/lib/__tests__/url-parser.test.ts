@@ -116,6 +116,41 @@ describe("extractUrls", () => {
       "https://example.com/path/",
     ]);
   });
+
+  test("strips stacked trailing ) then . (markdown url followed by sentence end)", () => {
+    // e.g. "...([text](url))." — both ) and . need to be removed
+    expect(extractUrls("See https://example.com).")).toEqual([
+      "https://example.com",
+    ]);
+  });
+
+  test("strips multiple consecutive unbalanced )", () => {
+    expect(extractUrls("(see https://example.com))")).toEqual([
+      "https://example.com",
+    ]);
+  });
+
+  test("preserves deeply nested balanced parens in Wikipedia URL", () => {
+    const url = "https://en.wikipedia.org/wiki/Lisp_(programming_language)#Syntax_and_semantics";
+    expect(extractUrls(url)).toEqual([url]);
+  });
+
+  test("strips trailing ! from exclamatory sentence", () => {
+    expect(extractUrls("Check this out: https://example.com!")).toEqual([
+      "https://example.com",
+    ]);
+  });
+
+  test("strips trailing ? from interrogative sentence", () => {
+    expect(extractUrls("Have you seen https://example.com?")).toEqual([
+      "https://example.com",
+    ]);
+  });
+
+  test("does not strip ? that is part of a query string", () => {
+    const url = "https://example.com/search?q=hello&page=1";
+    expect(extractUrls(url)).toEqual([url]);
+  });
 });
 
 // ─── extractDomain ─────────────────────────────────────────────────────────
