@@ -65,7 +65,14 @@
     "venueField": "Rivista / Convegno",
     "notesField": "Note (opzionale)",
     "pdfUrlField": "URL PDF (compilato automaticamente se disponibile)",
-    "addPaper": "Aggiungi articolo"
+    "addPaper": "Aggiungi articolo",
+    "previewButton": "Anteprima",
+    "previewing": "Analisi…",
+    "previewEmpty": "Nessun elemento riconosciuto in questo testo.",
+    "previewReferenceBadge": "Riferimento",
+    "previewUrlBadge": "Link",
+    "previewNoAuthorsYear": "nessun autore/anno rilevato",
+    "previewScrapeFailed": "— metadati non trovati, richiederà una correzione manuale"
   },
   "searchFilter": {
     "searchPlaceholder": "Cerca link…",

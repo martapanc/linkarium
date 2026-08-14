@@ -65,7 +65,14 @@
     "venueField": "Journal / Conference",
     "notesField": "Notes (optional)",
     "pdfUrlField": "PDF URL (auto-filled if openly available)",
-    "addPaper": "Add paper"
+    "addPaper": "Add paper",
+    "previewButton": "Preview",
+    "previewing": "Parsing…",
+    "previewEmpty": "Nothing recognised in this text yet.",
+    "previewReferenceBadge": "Reference",
+    "previewUrlBadge": "Link",
+    "previewNoAuthorsYear": "no authors/year detected",
+    "previewScrapeFailed": "— metadata not found, will need manual fixing"
   },
   "searchFilter": {
     "searchPlaceholder": "Search links…",

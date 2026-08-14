@@ -41,12 +41,28 @@ function trimTrailingPunctuation(url: string): string {
   return result;
 }
 
-export function extractUrls(input: string): string[] {
-  const matches = input.match(URL_REGEX);
-  if (!matches) return [];
+/** Like extractUrls, but also returns each match's character offset in the input. */
+export function extractUrlsWithIndex(input: string): { url: string; index: number }[] {
+  const regex = new RegExp(URL_REGEX.source, "gi");
+  const out: { url: string; index: number }[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = regex.exec(input))) {
+    const url = trimTrailingPunctuation(m[0]);
+    if (url) out.push({ url, index: m.index });
+  }
+  return out;
+}
 
-  // Deduplicate, preserving order
-  return [...new Set(matches.map(trimTrailingPunctuation).filter(Boolean))];
+export function extractUrls(input: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const { url } of extractUrlsWithIndex(input)) {
+    if (!seen.has(url)) {
+      seen.add(url);
+      out.push(url);
+    }
+  }
+  return out;
 }
 
 export function extractDomain(url: string): string {

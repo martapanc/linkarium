@@ -22,7 +22,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { DbList, DbLink, SortConfig, SortField, PaperInput } from "@/lib/types";
+import type { DbList, DbLink, SortConfig, SortField, PaperInput, PreviewItem } from "@/lib/types";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { useTranslations } from "next-intl";
 import { useWriteToken } from "@/lib/useWriteToken";
@@ -197,6 +197,26 @@ export function ListView({ list, initialLinks, flags }: Props) {
       }
     },
     [list.id, authFetch],
+  );
+
+  // Preview handler — dry-run the parser, no DB writes
+  const handlePreview = useCallback(
+    async (rawText: string): Promise<PreviewItem[]> => {
+      const res = await authFetch("/api/parse-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rawText }),
+      });
+
+      if (!res.ok) {
+        toast.error("Failed to preview");
+        return [];
+      }
+
+      const { items } = await res.json();
+      return items as PreviewItem[];
+    },
+    [authFetch],
   );
 
   // Delete link handler
@@ -385,7 +405,7 @@ export function ListView({ list, initialLinks, flags }: Props) {
           {/* Add links — only shown when unlocked */}
           {canWrite && (
             <div className="mt-4 sm:mt-8">
-              <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} isAdding={isAdding} />
+              <AddLinksForm onAdd={handleAddLinks} onAddPaper={handleAddPaper} onAddPapers={handleAddPapers} onPreview={handlePreview} isAdding={isAdding} />
             </div>
           )}
 

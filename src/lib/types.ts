@@ -66,6 +66,29 @@ export interface PaperInput {
   pdf_url?: string;
 }
 
+// ============================================================
+// Parse-preview types (dry-run of the link/reference parser)
+// ============================================================
+
+export interface PreviewReferenceItem {
+  type: "reference";
+  url: string;
+  title: string;
+  citation_authors: string | null;
+  citation_year: number | null;
+}
+
+export interface PreviewUrlItem {
+  type: "url";
+  url: string;
+  title: string | null;
+  description: string | null;
+  domain: string | null;
+  scrapeFailed: boolean;
+}
+
+export type PreviewItem = PreviewReferenceItem | PreviewUrlItem;
+
 export interface ScrapeResult {
   url: string;
   title: string | null;
