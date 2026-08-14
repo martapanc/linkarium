@@ -361,11 +361,11 @@ export function ListView({ list, initialLinks, flags }: Props) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
-      <nav className="border-b border-sand-200 px-4 sm:px-6 py-4">
+      <nav className="border-b-2 border-sand-900 px-4 sm:px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <a
             href="/"
-            className="font-display text-xl text-sand-900 tracking-tight hover:text-coral-500 transition-colors"
+            className="font-display italic text-xl text-sand-900 tracking-tight hover:text-coral-500 transition-colors"
           >
             Linkarium
           </a>

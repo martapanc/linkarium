@@ -28,7 +28,7 @@ export function PaperCardContent({ title, url, citation_authors, citation_venue,
             <span className="text-[10px] bg-emerald-50 text-emerald-600 px-1 py-0.3 rounded font-mono shrink-0">DOI</span>
           )}
           {pdf_url && (
-            <span className="text-[10px] bg-red-50 text-coral-500 px-1 py-0.3 rounded font-medium shrink-0">PDF</span>
+            <span className="text-[10px] bg-red-50 text-red-600 px-1 py-0.3 rounded font-medium shrink-0">PDF</span>
           )}
           {url && !doi && !pdf_url && (
             <span className="text-[10px] bg-sky-50 text-sky-700 px-1 py-0.3 rounded font-medium shrink-0">Web</span>

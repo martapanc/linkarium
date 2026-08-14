@@ -7,7 +7,7 @@ export function EmptyState() {
 
   return (
     <div className="mt-16 flex flex-col items-center text-center">
-      <div className="w-16 h-16 rounded-2xl bg-sand-100 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-lg bg-sand-100 flex items-center justify-center mb-5">
         <svg
           className="w-7 h-7 text-sand-400"
           fill="none"

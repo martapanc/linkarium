@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { DbList } from "@/lib/types";
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
 
 export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
   const t = useTranslations("listHeader");
+  const locale = useLocale();
   const [title, setTitle] = useState(list.title);
   const [description, setDescription] = useState(list.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -141,7 +142,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
       <div className="mt-3 flex items-center gap-4">
         <p className="text-xs text-sand-600">
           {t("linkCount", { count: linkCount })} · {t("created")}{" "}
-          {new Date(list.created_at).toLocaleDateString(undefined, {
+          {new Date(list.created_at).toLocaleDateString(locale, {
             day: "numeric",
             month: "short",
             year: "numeric",
@@ -159,7 +160,7 @@ export function ListHeader({ list, linkCount, onDelete, canWrite }: Props) {
             <AlertDialog.Overlay className="fixed inset-0 z-40 bg-black/30 animate-in fade-in-0" />
             <AlertDialog.Content className={clsx(
               "fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-              "w-full max-w-md bg-white rounded-2xl shadow-xl p-6",
+              "w-full max-w-md bg-white rounded-lg shadow-xl p-6",
               "animate-in fade-in-0 zoom-in-95"
             )}>
               <AlertDialog.Title className="text-lg font-semibold text-sand-900">

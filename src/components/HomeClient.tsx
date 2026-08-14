@@ -72,9 +72,9 @@ export function HomeClient({ flags }: Props) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
-      <nav className="border-b border-sand-200 px-6 py-4">
+      <nav className="border-b-2 border-sand-900 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <span className="font-display text-2xl text-sand-900 tracking-tight">
+          <span className="font-display italic text-2xl text-sand-900 tracking-tight">
             Linkarium
           </span>
           <div className="flex items-center gap-4">
@@ -113,7 +113,7 @@ export function HomeClient({ flags }: Props) {
             </div>
           )}
           <div className={clsx(
-            "bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden",
+            "bg-white rounded-lg border border-sand-300 shadow-sm overflow-hidden",
             !canWrite && "opacity-50 pointer-events-none select-none"
           )}>
             <div className="border-b border-sand-100 px-5 py-3">
@@ -150,7 +150,7 @@ export function HomeClient({ flags }: Props) {
                 disabled={isCreating}
                 className={clsx(
                   "bg-coral-500 hover:bg-coral-600 active:bg-coral-600 text-white",
-                  "font-medium text-sm px-6 py-2.5 rounded-lg",
+                  "font-medium text-sm px-6 py-2.5 rounded-md",
                   "transition-all duration-150 cursor-pointer",
                   "disabled:opacity-50 disabled:cursor-not-allowed"
                 )}

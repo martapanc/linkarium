@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sand-50: #faf9f7;
-  --color-sand-100: #f2f0eb;
-  --color-sand-200: #e8e4dd;
-  --color-sand-300: #d4cfc5;
-  --color-sand-400: #b5ad9e;
-  --color-sand-500: #9a9082;
-  --color-sand-600: #7d7466;
-  --color-sand-700: #5e5749;
-  --color-sand-800: #3d3830;
-  --color-sand-900: #1f1c18;
+  /* Ink / paper neutrals */
+  --color-sand-50: #fafafa;
+  --color-sand-100: #f2f2f0;
+  --color-sand-200: #e2e1dc;
+  --color-sand-300: #c7c5bd;
+  --color-sand-400: #9b988d;
+  --color-sand-500: #757265;
+  --color-sand-600: #555245;
+  --color-sand-700: #3b3830;
+  --color-sand-800: #23211b;
+  --color-sand-900: #131209;
 
-  --color-coral-400: #f0826d;
-  --color-coral-500: #e8634a;
-  --color-coral-600: #d44f36;
+  /* Academic blue — primary accent */
+  --color-coral-400: #5b87c4;
+  --color-coral-500: #2c5aa0;
+  --color-coral-600: #1e4074;
 
-  --color-teal-500: #2aa198;
-  --color-teal-600: #1e847c;
+  /* Secondary slate blue */
+  --color-teal-500: #0e6f8e;
+  --color-teal-600: #0b586f;
 
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-display: var(--font-serif), "Georgia", "Times New Roman", serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
 }
 
 /* Base styles */
