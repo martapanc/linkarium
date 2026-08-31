@@ -40,7 +40,7 @@ export function ParsePreviewPanel({ items }: Props) {
               </p>
             ) : (
               <p className="text-xs text-sand-600 mt-0.5 truncate">
-                {item.domain || item.url}
+                {[item.author, item.domain || item.url].filter(Boolean).join(" · ")}
                 {item.scrapeFailed && (
                   <span className="text-amber-600 ms-2">{t("previewScrapeFailed")}</span>
                 )}

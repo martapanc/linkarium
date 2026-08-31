@@ -1,5 +1,6 @@
 import ogs from "open-graph-scraper";
 import { extractDomain } from "./url-parser";
+import { isYouTubeUrl, scrapeYouTube } from "./youtube";
 import type { ScrapeResult } from "./types";
 
 const SCRAPE_TIMEOUT_MS = 8000;
@@ -35,8 +36,28 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult> {
       image_url: null,
       favicon_url: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
       domain,
+      author: null,
     };
   }
+
+  // YouTube's OG tags carry the description but not the channel name, so pair
+  // the regular scrape with a oEmbed lookup and merge the two.
+  if (isYouTubeUrl(url)) {
+    const [og, youtube] = await Promise.all([scrapeOpenGraph(url), scrapeYouTube(url)]);
+    if (!youtube) return og;
+    return {
+      ...og,
+      title: youtube.title || og.title,
+      image_url: og.image_url || youtube.image_url,
+      author: youtube.author,
+    };
+  }
+
+  return scrapeOpenGraph(url);
+}
+
+async function scrapeOpenGraph(url: string): Promise<ScrapeResult> {
+  const domain = extractDomain(url);
 
   try {
     const { result } = await ogs({
@@ -69,6 +90,7 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult> {
       image_url: imageUrl,
       favicon_url: favicon,
       domain,
+      author: null,
     };
   } catch (error) {
     console.warn(`[scraper] Failed to scrape ${url}:`, error);
@@ -79,6 +101,7 @@ export async function scrapeUrl(url: string): Promise<ScrapeResult> {
       image_url: null,
       favicon_url: buildFaviconUrl(url, undefined),
       domain,
+      author: null,
     };
   }
 }

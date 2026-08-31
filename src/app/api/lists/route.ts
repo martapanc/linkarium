@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
         image_url: s.image_url,
         favicon_url: s.favicon_url,
         domain: s.domain,
+        author: s.author,
         position: i,
         scraped_at: new Date().toISOString(),
       }));

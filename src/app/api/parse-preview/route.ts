@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         title: s?.title ?? null,
         description: s?.description ?? null,
         domain: s?.domain ?? null,
+        author: s?.author ?? null,
         scrapeFailed: !s?.title,
       };
     });

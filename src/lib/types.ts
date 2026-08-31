@@ -24,6 +24,8 @@ export interface DbLink {
   image_url: string | null;
   favicon_url: string | null;
   domain: string | null;
+  /** Content author — e.g. the channel name for a YouTube video */
+  author: string | null;
   position: number;
   created_at: string;
   scraped_at: string | null;
@@ -84,6 +86,7 @@ export interface PreviewUrlItem {
   title: string | null;
   description: string | null;
   domain: string | null;
+  author: string | null;
   scrapeFailed: boolean;
 }
 
@@ -96,6 +99,7 @@ export interface ScrapeResult {
   image_url: string | null;
   favicon_url: string | null;
   domain: string;
+  author: string | null;
 }
 
 // ============================================================

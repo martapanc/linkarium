@@ -60,7 +60,7 @@ export function LinkCard({ link, index, onDelete, onRescrape, onEdit, canWrite, 
             noPublicLinkLabel={t("noPublicLink")}
           />
         ) : (
-          <LinkCardContent title={link.title} url={link.url} domain={link.domain} />
+          <LinkCardContent title={link.title} url={link.url} domain={link.domain} author={link.author} />
         )}
       </div>
     </div>

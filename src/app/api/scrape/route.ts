@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
           image_url: result.image_url,
           favicon_url: result.favicon_url,
           domain: result.domain,
+          author: result.author,
           scraped_at: new Date().toISOString(),
         })
         .eq("id", linkId);
